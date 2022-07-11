@@ -1,4 +1,4 @@
-service: aws-node-http-api-project
+service: battleship-${env:BRANCH}
 frameworkVersion: '3'
 
 provider:
@@ -6,9 +6,9 @@ provider:
   runtime: nodejs14.x
 
 functions:
-  hello:
-    handler: handler.hello
+  createGame:
+    handler: createGame/index.handler
     events:
       - httpApi:
-          path: /
-          method: get
+          path: /game
+          method: post

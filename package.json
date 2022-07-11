@@ -1,0 +1,30 @@
+{
+  "name": "battleship-api",
+  "version": "0.1.0",
+  "description": "An Serverless backend for a MMO Battleship-inspired game created as a training exercise for Bitovi employees",
+  "main": "handler.js",
+  "dependencies": {},
+  "devDependencies": {
+    "serverless": "^3.20.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitovi/battleship-api.git"
+  },
+  "keywords": [
+    "serverless",
+    "battleship",
+    "game",
+    "api",
+    "bitovi"
+  ],
+  "author": "Bitovi, LLC.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bitovi/battleship-api/issues"
+  },
+  "homepage": "https://github.com/bitovi/battleship-api#readme"
+}
