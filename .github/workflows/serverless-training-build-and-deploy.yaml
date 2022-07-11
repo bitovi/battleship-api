@@ -2,7 +2,7 @@
 name: Serverless training build and deploy
 
 on:
-  push:
+  pull_request:
     branches:
       - main
       - 'training/**'
