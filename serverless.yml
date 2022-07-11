@@ -1,4 +1,4 @@
-service: battleship-${env:BRANCH}
+service: battleship-${env:GITHUB_BASE_REF}
 frameworkVersion: '3'
 
 provider:
