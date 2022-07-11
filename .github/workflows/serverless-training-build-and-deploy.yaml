@@ -2,7 +2,7 @@
 name: Serverless training build and deploy
 
 on:
-  pull_request:
+  push:
     branches:
       - main
       - 'training/**'
@@ -25,4 +25,4 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        GITHUB_BASE_REF: ${{ github.base_ref }}
+        TEAM_BRANCH_NAME: ${{ github.base_ref }}
