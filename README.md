@@ -1,15 +1,3 @@
-<!--
-title: 'AWS Simple HTTP Endpoint example in NodeJS'
-description: 'This template demonstrates how to make a simple HTTP API with Node.js running on AWS Lambda and API Gateway using the Serverless Framework.'
-layout: Doc
-framework: v3
-platform: AWS
-language: nodeJS
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
--->
-
 # Serverless Framework Node HTTP API on AWS
 
 This template demonstrates how to make a simple HTTP API with Node.js running on AWS Lambda and API Gateway using the Serverless Framework.
@@ -20,42 +8,11 @@ This template does not include any kind of persistence (database). For more adva
 
 ### Deployment
 
-```
-$ serverless deploy
-```
+Each team must create a branch following the pattern of `training/*`, e.g. `training/the-a-team`. Push this branch to origin and an action will be triggered to deploy an environment for your team.
 
-After deploying, you should see output similar to:
+Navigates to the [actions tab](https://github.com/bitovi/battleship-api/actions) and find the workflow for your branch to see the status of the deployment.
 
-```bash
-Deploying aws-node-http-api-project to stage dev (us-east-1)
-
-✔ Service deployed to stack aws-node-http-api-project-dev (152s)
-
-endpoint: GET - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/
-functions:
-  hello: aws-node-http-api-project-dev-hello (1.9 kB)
-```
-
-_Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [http event docs](https://www.serverless.com/framework/docs/providers/aws/events/apigateway/).
-
-### Invocation
-
-After successful deployment, you can call the created application via HTTP:
-
-```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/
-```
-
-Which should result in response similar to the following (removed `input` content for brevity):
-
-```json
-{
-  "message": "Go Serverless v2.0! Your function executed successfully!",
-  "input": {
-    ...
-  }
-}
-```
+To find the URL of the deployment, navigate to the `deploy` for your workflow and click the dropdown for details about the `serverless deploy` step. After this step runs succesfully, it will print out the URL it deployed to.
 
 ### Local development
 
@@ -74,8 +31,11 @@ Which should result in response similar to the following:
 }
 ```
 
+### AWS emulation
 
-Alternatively, it is also possible to emulate API Gateway and Lambda locally by using `serverless-offline` plugin. In order to do that, execute the following command:
+__API Gateway and Lambda__
+
+It is possible to emulate API Gateway and Lambda locally by using `serverless-offline` plugin. In order to do that, execute the following command:
 
 ```bash
 serverless plugin install -n serverless-offline
@@ -90,3 +50,13 @@ serverless offline
 ```
 
 To learn more about the capabilities of `serverless-offline`, please refer to its [GitHub repository](https://github.com/dherault/serverless-offline).
+
+__DynamoDB__
+
+It is possible to emulate DynamoDB locally by using `serverless-dynamodb-local` plugin. In order to do that, execute the following command:
+
+```bash
+serverless plugin install -n serverless-dynamodb-local
+```
+
+To learn more about the capabilities of `serverless-dynamodb-local`, please refer to its [GitHub repository](https://github.com/99x/serverless-dynamodb-local).
