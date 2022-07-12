@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "description": "An Serverless backend for a MMO Battleship-inspired game created as a training exercise for Bitovi employees",
   "main": "handler.js",
-  "dependencies": {},
+  "dependencies": {
+    "@aws-sdk/client-sts": "^3.127.0",
+    "@aws-sdk/credential-provider-node": "^3.127.0"
+  },
   "devDependencies": {
     "serverless": "^3.20.0"
   },

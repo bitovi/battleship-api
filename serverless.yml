@@ -9,6 +9,8 @@ provider:
       Action:
         - dynamodb:*
       Resource: '*'
+  environment:
+    GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
 functions:
   createGame:
     handler: createGame/index.handler
