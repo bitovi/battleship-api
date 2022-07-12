@@ -15,13 +15,15 @@ const client = new DynamoDB({
   credentialDefaultProvider: credentialProvider
 });
 
+const ddbDocClient = DynamoDBDocument.from(client);
+
 module.exports.handler = async (event) => {
-  const result = await client.putItem({
+  const result = await ddbDocClient.put({
     TableName: GAMES_TABLE_NAME,
-      Item: {
-        id: createUuid(),
-        message: "Hello World!"
-      }
+    Item: {
+      id: createUuid(),
+      message: "Hello World!"
+    }
   });
 
   return {
