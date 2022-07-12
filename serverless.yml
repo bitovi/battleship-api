@@ -1,4 +1,4 @@
-service: battleship-api-${env:TEAM_BRANCH_NAME}
+service: battleship-api-${env:TEAM_BRANCH_NAME, 'dev'}
 frameworkVersion: '3'
 
 provider:
