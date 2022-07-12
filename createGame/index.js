@@ -19,17 +19,13 @@ const dynamoClient = DynamoDBDocument.from(new DynamoDB({
 
 module.exports.handler = async (event) => {
   const id = createUuid();
-  const documentPutResult = await dynamoClient.put({
+  await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Item: {
       id,
       message: "Hello World!"
     }
   });
-
-  if (documentPutResult.$metadata.httpStatusCode !== 200) {
-    throw createError(documentPutResult.$metadata.httpStatusCode);
-  }
 
   const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
@@ -38,8 +34,12 @@ module.exports.handler = async (event) => {
     }
   })
 
+  if (!documentGetResult.Item) {
+    throw createError(500);
+  }
+
   return {
-    statusCode: documentGetResult.$metadata.httpStatusCode,
+    statusCode: 200,
     body: JSON.stringify(
       documentGetResult.Item,
       null,
