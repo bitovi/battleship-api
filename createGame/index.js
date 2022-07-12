@@ -41,7 +41,7 @@ module.exports.handler = async (event) => {
   return {
     statusCode: documentGetResult.$metadata.httpStatusCode,
     body: JSON.stringify(
-      documentGetResult,
+      documentGetResult.Item,
       null,
       2
     )
