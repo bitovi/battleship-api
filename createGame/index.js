@@ -6,6 +6,7 @@ const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDB } = require("@aws-sdk/client-dynamodb");
 const { v4: createUuid } = require("uuid");
 const { AWS_REGION, GAMES_TABLE_NAME } = process.env;
+const createError = require("http-errors");
 
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
@@ -17,18 +18,29 @@ const dynamoClient = DynamoDBDocument.from(new DynamoDB({
 }));
 
 module.exports.handler = async (event) => {
-  const result = await dynamoClient.put({
+  const id = createUuid();
+  const documentPutResult = await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Item: {
-      id: createUuid(),
+      id,
       message: "Hello World!"
     }
   });
 
+  if (documentPutResult.$metadata.httpStatusCode !== 200) {
+    throw createError(documentPutResult.$metadata.httpStatusCode);
+  }
+
+  const documentGetResult = await dynamoClient.get({
+    Key: {
+      id
+    }
+  })
+
   return {
-    statusCode: result.$metadata.httpStatusCode,
+    statusCode: documentGetResult.$metadata.httpStatusCode,
     body: JSON.stringify(
-      result,
+      documentGetResult,
       null,
       2
     )
