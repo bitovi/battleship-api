@@ -1,10 +1,14 @@
-service: battleship-${env:TEAM_BRANCH_NAME}
+service: battleship-api-${env:TEAM_BRANCH_NAME}
 frameworkVersion: '3'
 
 provider:
   name: aws
   runtime: nodejs14.x
-
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: '*'
 functions:
   createGame:
     handler: createGame/index.handler
@@ -12,3 +16,16 @@ functions:
       - httpApi:
           path: /game
           method: post
+resources:
+  Resources:
+    GamesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-games
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
