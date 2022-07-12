@@ -4,6 +4,7 @@
   "description": "An Serverless backend for a MMO Battleship-inspired game created as a training exercise for Bitovi employees",
   "main": "handler.js",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.127.0",
     "@aws-sdk/client-sts": "^3.127.0",
     "@aws-sdk/credential-provider-node": "^3.127.0"
   },
