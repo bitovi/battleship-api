@@ -21,15 +21,15 @@ module.exports.handler = async (event) => {
       Item: {
         id: createUuid(),
         message: "Hello World!"
-      },
+      }
   });
 
   return {
-    statusCode: $metadata.httpStatusCode,
+    statusCode: result.$metadata.httpStatusCode,
     body: JSON.stringify(
       result,
       null,
       2
-    ),
+    )
   };
 };
