@@ -32,6 +32,7 @@ module.exports.handler = async (event) => {
   }
 
   const documentGetResult = await dynamoClient.get({
+    TableName: GAMES_TABLE_NAME,
     Key: {
       id
     }
