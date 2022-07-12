@@ -4,6 +4,7 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs14.x
+  region: us-east-1
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -11,6 +12,7 @@ provider:
       Resource: '*'
   environment:
     GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
+    AWS_REGION: ${self:provider.region}
 functions:
   createGame:
     handler: createGame/index.handler
