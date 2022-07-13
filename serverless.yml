@@ -12,6 +12,13 @@ provider:
       Resource: '*'
   environment:
     GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
+    AWS_DYNAMO_ENDPOINT: ${self:custom.env.${opt:stage}.dynamoEndpoint}
+custom:
+  env:
+    dev:
+      dynamoEndpoint: 'http://localhost:8000'
+    prod:
+      dynamoEndpoint: ''
 functions:
   createGame:
     handler: createGame/index.handler
@@ -35,15 +42,3 @@ resources:
 plugins:
   - serverless-dynamodb-local
   - serverless-offline
-custom:
-  dynamodb:
-    stages:
-     - dev
-    start:
-      port: 8000
-      inMemory: true
-      heapInitial: 200m
-      heapMax: 1g
-      migrate: true
-      seed: true
-      convertEmptyValues: true

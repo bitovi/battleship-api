@@ -1,32 +1,33 @@
 'use strict';
 
-const { getDefaultRoleAssumerWithWebIdentity } = require('@aws-sdk/client-sts');
-const { defaultProvider } = require('@aws-sdk/credential-provider-node');
-const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
-const { DynamoDB } = require('@aws-sdk/client-dynamodb');
-const { getTokenForGame } = require('../token');
-
-const { AWS_REGION, GAMES_TABLE_NAME } = process.env;
-const createError = require('http-errors');
 const Game = require('../types/Game');
 const Player = require('../types/Player');
 const BattleShip = require('../types/ships/BattleShip');
+const { getTokenForGame } = require('../token');
+const { getDefaultRoleAssumerWithWebIdentity } = require("@aws-sdk/client-sts");
+const { defaultProvider } = require("@aws-sdk/credential-provider-node");
+const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDB } = require("@aws-sdk/client-dynamodb");
+const { AWS_REGION, GAMES_TABLE_NAME, AWS_DYNAMO_ENDPOINT } = process.env;
+const createError = require("http-errors");
 
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
 });
-
-const dynamoClient = DynamoDBDocument.from(
-  new DynamoDB({
-    region: AWS_REGION,
-    credentialDefaultProvider: credentialProvider,
+const configuration = AWS_DYNAMO_ENDPOINT ?
+  {
     credentials: {
       accessKeyId: 'accessKeyId',
       secretAccessKey: 'secretAccessKey'
     },
-    endpoint: 'http://localhost:8000',
-  })
-);
+    endpoint: AWS_DYNAMO_ENDPOINT
+  } : {
+    credentialDefaultProvider: credentialProvider
+  }
+const dynamoClient = DynamoDBDocument.from(new DynamoDB({
+  region: AWS_REGION,
+  ...configuration,
+}));
 
 module.exports.handler = async (event) => {
   const parsedBody = JSON.parse(event.body);
