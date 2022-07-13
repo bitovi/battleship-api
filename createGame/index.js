@@ -26,22 +26,27 @@ const dynamoClient = DynamoDBDocument.from(
 );
 
 module.exports.handler = async (event) => {
-  const body = JSON.parse(event.body);
+  const { userName } = JSON.parse(event.body);
   const id = faker.datatype.uuid();
-  await dynamoClient.put({
+  const gameShips = [
+    {
+      "name": "Arizona Battleship",
+      "size": 4
+    }
+  ];
+  const documentPutResult = await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Item: {
       id,
-      ships: [
-        {
-          "name": "Arizona Battleship",
-          "size": 4
-        }
-      ]
+      ships: gameShips
     },
   });
 
-  const documentGetResult = await dynamoClient.get({
+  if(documentPutResult.$metadata.httpStatusCode != 200) {
+    throw createError(500);
+  }
+  
+  /*const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
     Key: {
       id,
@@ -51,13 +56,14 @@ module.exports.handler = async (event) => {
   if (!documentGetResult.Item) {
     throw createError(500);
   }
+  */
 
   return {
     statusCode: 200,
     body: JSON.stringify({
         gameId: id,
-        ships: documentGetResult.Item.ships, 
-        token: createUser({ gameId: id })
+        ships: gameShips, 
+        token: createUser({ gameId: id, name: userName })
       }, null, 2),
   };
 };
