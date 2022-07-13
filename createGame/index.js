@@ -30,10 +30,10 @@ const dynamoClient = DynamoDBDocument.from(
 
 module.exports.handler = async (event) => {
   const parsedBody = JSON.parse(event.body);
-  const { name } = parsedBody;
+  const { name, gridSize } = parsedBody;
   const gameOwner = new Player({ name });
 
-  const game = new Game({owner: gameOwner});
+  const game = new Game({owner: gameOwner, gridSize});
 
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,

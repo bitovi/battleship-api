@@ -1,20 +1,24 @@
+const { v4: createUuid } = require('uuid');
 module.exports = class BattleShip {
   static size = 4;
   static name = 'battleship';
   constructor(payload) {
+    this.id = payload.id ?? createUuid();
     this.userId = payload.userId;
+    this.hitCount = 0;
   }
 
   static describeShip () {
     return {
-      length: BattleShip.size,
+      size: BattleShip.size,
       name: BattleShip.name
     };
   }
 
   serialize() {
     return {
-      size,
+      name: BattleShip.name,
+      id: this.id,
       userId: this.userId
     }
   }

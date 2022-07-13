@@ -11,7 +11,7 @@ module.exports = class Player {
     return {
       id: this.id,
       name: this.name,
-      ships: this.ships, // todo serialize these
+      ships: this.ships.map(s => s.serialize()),
     }
   }
 
