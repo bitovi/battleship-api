@@ -6,6 +6,7 @@ module.exports = class Game {
     this.id = payload.id ?? createUuid();
     this.grid = payload.grid ?? this.createGrid(10);
     this.players = payload.players ?? [];
+    this.owner = payload.owner;
   }
 
   createGrid(gridSize) {
@@ -14,6 +15,7 @@ module.exports = class Game {
 
   serialize() {
     return {
+      owner: this.owner.serialize(),
       id: this.id,
       grid: this.grid.map(row => row.map(cell => cell.serialize())),
       players: this.players

@@ -8,6 +8,7 @@ const { v4: createUuid } = require('uuid');
 const { AWS_REGION, GAMES_TABLE_NAME } = process.env;
 const createError = require('http-errors');
 const Game = require('../types/Game');
+const Player = require('../types/Player');
 
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
@@ -26,7 +27,12 @@ const dynamoClient = DynamoDBDocument.from(
 );
 
 module.exports.handler = async (event) => {
-  const game = new Game();
+  const parsedBody = JSON.parse(event.body);
+  const { name } = parsedBody;
+  const gameOwner = new Player({ name });
+
+  const game = new Game({owner: gameOwner});
+
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Item: game.serialize(),
