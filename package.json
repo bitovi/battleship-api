@@ -9,6 +9,7 @@
     "@aws-sdk/credential-provider-node": "^3.127.0",
     "@aws-sdk/lib-dynamodb": "^3.128.0",
     "http-errors": "^2.0.0",
+    "jsonwebtoken": "^8.5.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

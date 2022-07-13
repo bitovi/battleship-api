@@ -1,7 +1,25 @@
-const Ship = require('./Ship');
-
-module.exports = class BattleShip extends Ship {
+module.exports = class BattleShip {
+  static size = 4;
+  static name = 'battleship';
   constructor(payload) {
-    super({length: 4, userId: payload.userId});
+    this.userId = payload.userId;
+  }
+
+  static describeShip () {
+    return {
+      length: BattleShip.size,
+      name: BattleShip.name
+    };
+  }
+
+  serialize() {
+    return {
+      size,
+      userId: this.userId
+    }
+  }
+
+  deserialize(payload) {
+    return new BattleShip(payload);
   }
 }

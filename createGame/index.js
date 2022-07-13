@@ -4,11 +4,13 @@ const { getDefaultRoleAssumerWithWebIdentity } = require('@aws-sdk/client-sts');
 const { defaultProvider } = require('@aws-sdk/credential-provider-node');
 const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
 const { DynamoDB } = require('@aws-sdk/client-dynamodb');
-const { v4: createUuid } = require('uuid');
+const { getTokenForGame } = require('../token');
+
 const { AWS_REGION, GAMES_TABLE_NAME } = process.env;
 const createError = require('http-errors');
 const Game = require('../types/Game');
 const Player = require('../types/Player');
+const BattleShip = require('../types/ships/BattleShip');
 
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
@@ -49,8 +51,14 @@ module.exports.handler = async (event) => {
     throw createError(500);
   }
 
+  const returnValue = {
+    id: documentGetResult.Item.id,
+    ships: [BattleShip.describeShip()],
+    token: getTokenForGame(gameOwner.id)
+  } 
+
   return {
     statusCode: 200,
-    body: JSON.stringify(documentGetResult.Item, null, 2),
+    body: JSON.stringify(returnValue, null, 2),
   };
 };
