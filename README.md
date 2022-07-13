@@ -16,7 +16,7 @@ To find the URL of the deployment, navigate to the `deploy` for your workflow an
 
 ### Local development
 
-__Note: you must install serverless globally to use `serverless` or `sls` commands:
+_Note: you must install serverless globally to use `serverless` or `sls` commands:_
 
 ```bash
 npm i -g serverless
