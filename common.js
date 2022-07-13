@@ -18,3 +18,6 @@ module.exports.dynamo = DynamoDBDocument.from(new DynamoDB({
         secretAccessKey: 'secretAccessKey'
     },
 }));
+
+
+module.exports.privateKey = "fish";

@@ -9,18 +9,22 @@
     "@aws-sdk/credential-provider-node": "^3.127.0",
     "@aws-sdk/lib-dynamodb": "^3.128.0",
     "http-errors": "^2.0.0",
+    "jsonwebtoken": "^8.5.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "eslint": "^8.19.0",
     "serverless": "^3.20.0",
     "serverless-dynamodb-local": "0.2.30",
     "serverless-offline": "^8.8.1"
   },
   "scripts": {
+    "lint": "eslint .",
     "start": "serverless offline start",
     "start:dynamo": "sls dynamodb start",
     "debug": "export SLS_DEBUG=* && node --inspect ./node_modules/.bin/serverless offline start",
     "init:dynamo": "sls dynamodb install --localPath ./bin",
+    "init:eslint": "eslint --init",
     "remove:dynamo": "sls dynamodb remove"
   },
   "repository": {
