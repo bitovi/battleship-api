@@ -14,6 +14,11 @@ const credentialProvider = defaultProvider({
 
 const dynamoClient = DynamoDBDocument.from(new DynamoDB({
   region: AWS_REGION,
+  endpoint: "http://localhost:8000",
+  credentials: {
+    accessKeyId: 'accessKeyId',
+    secretAccessKey: 'secretAccessKey'
+  },
   credentialDefaultProvider: credentialProvider
 }));
 
