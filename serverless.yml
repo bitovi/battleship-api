@@ -29,6 +29,7 @@ provider:
           Resource: "*"
   environment:
     GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
+    JWT_SECRET_KEY: "MR_ROBOTO_BY_STYX"
 functions:
   createGame:
     handler: createGame/index.handler
