@@ -7,6 +7,7 @@ const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { v4: createUuid } = require('uuid');
 const { AWS_REGION, GAMES_TABLE_NAME } = process.env;
 const createError = require('http-errors');
+const Game = require('../types/Game');
 
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
@@ -16,24 +17,25 @@ const dynamoClient = DynamoDBDocument.from(
   new DynamoDB({
     region: AWS_REGION,
     credentialDefaultProvider: credentialProvider,
+    credentials: {
+      accessKeyId: 'accessKeyId',
+      secretAccessKey: 'secretAccessKey'
+    },
     endpoint: 'http://localhost:8000',
   })
 );
 
 module.exports.handler = async (event) => {
-  const id = createUuid();
+  const game = new Game();
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
-    Item: {
-      id,
-      message: 'Hello World!',
-    },
+    Item: game.serialize(),
   });
 
   const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
     Key: {
-      id,
+      id: game.id,
     },
   });
 
