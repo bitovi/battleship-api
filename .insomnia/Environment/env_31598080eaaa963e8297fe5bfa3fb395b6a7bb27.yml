@@ -1,0 +1,14 @@
+_id: env_31598080eaaa963e8297fe5bfa3fb395b6a7bb27
+type: Environment
+parentId: wrk_b954b72070a445a3b0be5ec6aed1faad
+modified: 1657727849282
+created: 1657727754326
+name: Base Environment
+data:
+  base_url: https://xmgiq2dsl1.execute-api.us-east-1.amazonaws.com
+dataPropertyOrder:
+  "&":
+    - base_url
+color: null
+isPrivate: false
+metaSortKey: 1657727754326
