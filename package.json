@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "serverless": "^3.20.0",
-    "serverless-dynamodb-local": "^0.2.30",
+    "serverless-dynamodb-local": "0.2.30",
     "serverless-offline": "^8.8.1"
   },
   "scripts": {
