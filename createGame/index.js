@@ -30,7 +30,7 @@ module.exports.handler = async (event) => {
   }
 
   if (!body.shipName) {
-    body.shipName = userName + "'s Ship"
+    body.shipName = body.userName + "'s Ship"
   }
 
   if (!body.shipSize) {
