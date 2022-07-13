@@ -16,6 +16,12 @@ To find the URL of the deployment, navigate to the `deploy` for your workflow an
 
 ### Local development
 
+__Note: you must install serverless globally to use `serverless` or `sls` commands:
+
+```bash
+npm i -g serverless
+```
+
 You can invoke your function locally by using the following command:
 
 ```bash
@@ -33,6 +39,38 @@ Which should result in response similar to the following:
 
 ### AWS emulation
 
+__DynamoDB__
+
+_Note: There is a known issue running this plugin on Node version 17 and above._
+
+It is possible to emulate DynamoDB locally by using `serverless-dynamodb-local` plugin. In order to do that, follow these steps:
+
+Run `sls plugin install -n serverless-dynamodb-local`
+
+Then run `sls dynamodb install`
+
+Add the following under the `custom` section in the `serverless.yml`:
+```yaml
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+```
+
+You can start local DynamoDB by itself by running `sls dynamodb start`
+
+_Note: You may encounter an `spawn java ENOENT` error, you may need to manually install the Java SDK_
+
+To learn more about the capabilities of `serverless-dynamodb-local`, please refer to its [GitHub repository](https://github.com/99x/serverless-dynamodb-local).
+
+
 __API Gateway and Lambda__
 
 It is possible to emulate API Gateway and Lambda locally by using `serverless-offline` plugin. In order to do that, execute the following command:
@@ -49,14 +87,7 @@ After installation, you can start local emulation with:
 serverless offline
 ```
 
+_Note: this should automatically startup local DynamoDB, but seems to be inconsistent so you may need to run it seperately_
+
 To learn more about the capabilities of `serverless-offline`, please refer to its [GitHub repository](https://github.com/dherault/serverless-offline).
 
-__DynamoDB__
-
-It is possible to emulate DynamoDB locally by using `serverless-dynamodb-local` plugin. In order to do that, execute the following command:
-
-```bash
-serverless plugin install -n serverless-dynamodb-local
-```
-
-To learn more about the capabilities of `serverless-dynamodb-local`, please refer to its [GitHub repository](https://github.com/99x/serverless-dynamodb-local).

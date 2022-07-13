@@ -5,16 +5,25 @@ const { defaultProvider } = require("@aws-sdk/credential-provider-node");
 const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDB } = require("@aws-sdk/client-dynamodb");
 const { v4: createUuid } = require("uuid");
-const { AWS_REGION, GAMES_TABLE_NAME } = process.env;
+const { AWS_REGION, GAMES_TABLE_NAME, AWS_DYNAMO_ENDPOINT } = process.env;
 const createError = require("http-errors");
 
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
 });
-
+const configuration = AWS_DYNAMO_ENDPOINT ?
+  {
+    credentials: {
+      accessKeyId: 'accessKeyId',
+      secretAccessKey: 'secretAccessKey'
+    },
+    endpoint: AWS_DYNAMO_ENDPOINT
+  } : {
+    credentialDefaultProvider: credentialProvider
+  }
 const dynamoClient = DynamoDBDocument.from(new DynamoDB({
   region: AWS_REGION,
-  credentialDefaultProvider: credentialProvider
+  ...configuration,
 }));
 
 module.exports.handler = async (event) => {
