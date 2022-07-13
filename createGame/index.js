@@ -7,6 +7,7 @@ const { DynamoDB } = require("@aws-sdk/client-dynamodb");
 const { v4: createUuid } = require("uuid");
 const { AWS_REGION, GAMES_TABLE_NAME } = process.env;
 const createError = require("http-errors");
+const { generateTokenFromPayload } = require('../helpers/webtoken')
 
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
@@ -24,6 +25,12 @@ const dynamoClient = DynamoDBDocument.from(new DynamoDB({
 
 module.exports.handler = async (event) => {
   const id = createUuid();
+
+  const body = JSON.parse(event.body)
+  const gridSize = body.gridSize || 10
+  const creatorUserName = body.name || 'host'
+  const creatorUserToken = generateTokenFromPayload({ id, name: creatorUserName })
+
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Item: {
@@ -34,7 +41,14 @@ module.exports.handler = async (event) => {
           "size": 4
         }
       ],
-      users: []
+      gridSize,
+      players: [
+        {
+          isAdmin: true,
+          name: creatorUserName,
+          token: creatorUserToken
+        }
+      ]
     }
   });
 
@@ -49,14 +63,18 @@ module.exports.handler = async (event) => {
     throw createError(500);
   }
 
+  const result = {
+    gameId: id,
+    ships: documentGetResult.Item.ships,
+    token: creatorUserToken
+  }
+
   return {
     statusCode: 200,
     body: JSON.stringify(
-      documentGetResult.Item,
+      result,
       null,
       2
     )
-  };
+  }
 };
-
-
