@@ -47,7 +47,7 @@ custom:
       seed: true
       convertEmptyValues: true
     # Uncomment only if you already have a DynamoDB running locally
-    # noStart: true            
+    # noStart: true
 plugins:
   - serverless-offline
   - serverless-dynamodb-local

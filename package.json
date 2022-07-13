@@ -20,7 +20,8 @@
     "start": "serverless offline",
     "start:dynamo": "sls dynamodb start",
     "debug": "export SLS_DEBUG=* && node --inspect ./node_modules/.bin/serverless offline",
-    "init:dynamo": "sls dynamodb install --localPath ./bin"
+    "init:dynamo": "sls dynamodb install --localPath ./bin",
+    "remove:dynamo": "sls dynamodb remove"
   },
   "repository": {
     "type": "git",
