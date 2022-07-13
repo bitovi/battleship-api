@@ -39,30 +39,19 @@ module.exports.handler = async (event) => {
       size: 4,
     },
   ];
-  const documentPutResult = await dynamoClient.put({
-    TableName: GAMES_TABLE_NAME,
-    Item: {
-      id,
-      ships: gameShips,
-    },
-  });
-
-  if (documentPutResult.$metadata.httpStatusCode != 200) {
-    throw createError(500);
+  
+  try {
+    await dynamoClient.put({
+      TableName: GAMES_TABLE_NAME,
+      Item: {
+        id,
+        ships: gameShips,
+      },
+    });
+  } catch (err) {
+    throw new Error(err.message);
   }
-
-  /*const documentGetResult = await dynamoClient.get({
-    TableName: GAMES_TABLE_NAME,
-    Key: {
-      id,
-    },
-  });
-
-  if (!documentGetResult.Item) {
-    throw createError(500);
-  }
-  */
-
+  
   return {
     statusCode: 200,
     body: JSON.stringify(
