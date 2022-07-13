@@ -29,6 +29,18 @@ provider:
           Resource: "*"
   environment:
     GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
+custom:
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      seed: true
+      convertEmptyValues: true
+      migrate: true
+    stages: 
+      - dev
 functions:
   createGame:
     handler: createGame/index.handler
@@ -51,4 +63,8 @@ resources:
             KeyType: HASH
 plugins:
   - serverless-offline
+<<<<<<< HEAD
   - serverless-dynamodb-local
+=======
+  - serverless-dynamodb-local
+>>>>>>> 75920eeea6f634d7ccb395726ef5d95732711387
