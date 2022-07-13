@@ -1,10 +1,10 @@
-_id: req_b8f1965819c64254bd478b0a837172b0
+_id: req_fb36ee0fe1484c6fa665629802269d56
 type: Request
 parentId: wrk_b954b72070a445a3b0be5ec6aed1faad
-modified: 1657737369359
-created: 1657727760005
+modified: 1657737370660
+created: 1657737239504
 url: "{{base_url}}/{% request 'name', '', 0 %}"
-name: createGame
+name: startGame
 description: ""
 method: POST
 body:
@@ -18,7 +18,7 @@ headers:
   - name: Content-Type
     value: application/json
 authentication: {}
-metaSortKey: -1657727760005
+metaSortKey: -1653429977874.75
 isPrivate: false
 settingStoreCookies: true
 settingSendCookies: true

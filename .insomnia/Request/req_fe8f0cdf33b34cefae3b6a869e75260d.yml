@@ -1,10 +1,10 @@
-_id: req_b8f1965819c64254bd478b0a837172b0
+_id: req_fe8f0cdf33b34cefae3b6a869e75260d
 type: Request
 parentId: wrk_b954b72070a445a3b0be5ec6aed1faad
-modified: 1657737369359
-created: 1657727760005
+modified: 1657737370161
+created: 1657737182087
 url: "{{base_url}}/{% request 'name', '', 0 %}"
-name: createGame
+name: placeShip
 description: ""
 method: POST
 body:
@@ -18,7 +18,7 @@ headers:
   - name: Content-Type
     value: application/json
 authentication: {}
-metaSortKey: -1657727760005
+metaSortKey: -1654043946750.5
 isPrivate: false
 settingStoreCookies: true
 settingSendCookies: true
