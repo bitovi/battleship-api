@@ -8,9 +8,8 @@ const createError = require("http-errors");
 
 module.exports.handler = async (event) => {
 
-
   try {
-    
+    console.log("test");
   } catch (err) {
     return createError(err);
   }
