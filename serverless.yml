@@ -1,15 +1,17 @@
 service: battleship-api-${env:TEAM_BRANCH_NAME, 'dev'}
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
   runtime: nodejs14.x
   region: us-east-1
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:*
-      Resource: '*'
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+          Resource: "*"
   environment:
     GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
 functions:
@@ -32,3 +34,6 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
