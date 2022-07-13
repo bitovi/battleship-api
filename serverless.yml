@@ -14,10 +14,16 @@ provider:
     GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
 custom:
   dynamodb:
+    stages: 
+      - dev
     start:
+      port: 8000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
       migrate: true
-      stages: 
-        - dev
+      seed: true
+      convertEmptyValues: true
 functions:
   createGame:
     handler: createGame/index.handler
