@@ -12,7 +12,6 @@ const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
 });
 
-<<<<<<< HEAD
 const dynamoClient = DynamoDBDocument.from(
   new DynamoDB({
     region: AWS_REGION,
@@ -24,17 +23,6 @@ const dynamoClient = DynamoDBDocument.from(
     credentialDefaultProvider: credentialProvider,
   })
 );
-=======
-const dynamoClient = DynamoDBDocument.from(new DynamoDB({
-  region: AWS_REGION,
-  endpoint: "http://localhost:8000",
-  credentials: {
-    accessKeyId: 'accessKeyId',
-    secretAccessKey: 'secretAccessKey'
-  },
-  credentialDefaultProvider: credentialProvider
-}));
->>>>>>> 75920eeea6f634d7ccb395726ef5d95732711387
 
 module.exports.handler = async (event) => {
   const id = createUuid();
