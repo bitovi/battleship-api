@@ -10,10 +10,18 @@ const credentialProvider = defaultProvider({
     roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
 });
 
-module.exports.dynamo = DynamoDBDocument.from(new DynamoDB({
-    credentialProvider: credentialProvider,
+const options = {
+    credentialProviderDefault: credentialProvider,
     region: AWS_REGION
-}));
+}
+
+if (process.env.IS_OFFLINE) {
+    options.endpoint = "http://localhost:8000"
+}
+
+
+module.exports.dynamo = DynamoDBDocument.from(new DynamoDB(options));
+module.exports.options = options;
 
 
 module.exports.privateKey = "fish";
