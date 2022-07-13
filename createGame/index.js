@@ -28,7 +28,13 @@ module.exports.handler = async (event) => {
     TableName: GAMES_TABLE_NAME,
     Item: {
       id,
-      message: "Hello World!"
+      ships: [
+        {
+          "name": "battleship",
+          "size": 4
+        }
+      ],
+      users: []
     }
   });
 
