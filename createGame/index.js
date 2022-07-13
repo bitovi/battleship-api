@@ -12,10 +12,17 @@ const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
 });
 
-const dynamoClient = DynamoDBDocument.from(new DynamoDB({
-  region: AWS_REGION,
-  credentialDefaultProvider: credentialProvider
-}));
+const dynamoClient = DynamoDBDocument.from(
+  new DynamoDB({
+    region: AWS_REGION,
+    endpoint: "http://localhost:8000",
+    credentials: {
+      accessKeyId: "accessKeyId",
+      secretAccessKey: "secretAccessKey",
+    },
+    credentialDefaultProvider: credentialProvider,
+  })
+);
 
 module.exports.handler = async (event) => {
   const id = createUuid();
@@ -23,16 +30,16 @@ module.exports.handler = async (event) => {
     TableName: GAMES_TABLE_NAME,
     Item: {
       id,
-      message: "Hello World!"
-    }
+      message: "Hello World!",
+    },
   });
 
   const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
     Key: {
-      id
-    }
-  })
+      id,
+    },
+  });
 
   if (!documentGetResult.Item) {
     throw createError(500);
@@ -40,10 +47,6 @@ module.exports.handler = async (event) => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify(
-      documentGetResult.Item,
-      null,
-      2
-    )
+    body: JSON.stringify(documentGetResult.Item, null, 2),
   };
 };
