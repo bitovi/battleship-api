@@ -27,7 +27,7 @@ module.exports.handler = async (event) => {
     TableName: GAMES_TABLE_NAME,
     Item: {
       id,
-      message: "Hello World!"
+      message: "Hello Worlds!"
     }
   });
 

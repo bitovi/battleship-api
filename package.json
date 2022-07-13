@@ -19,7 +19,7 @@
   "scripts": {
     "start": "serverless offline start",
     "start:dynamo": "sls dynamodb start",
-    "debug": "export SLS_DEBUG=* && node --inspect ./node_modules/.bin/serverless offline",
+    "debug": "export SLS_DEBUG=* && node --inspect ./node_modules/.bin/serverless offline start",
     "init:dynamo": "sls dynamodb install --localPath ./bin",
     "remove:dynamo": "sls dynamodb remove"
   },
