@@ -32,3 +32,18 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+custom:
+  dynamodb:
+    stages:
+     - dev
+    start:
+      port: 8000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: true
