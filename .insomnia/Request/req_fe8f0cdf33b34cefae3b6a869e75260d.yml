@@ -1,7 +1,7 @@
 _id: req_fe8f0cdf33b34cefae3b6a869e75260d
 type: Request
 parentId: wrk_b954b72070a445a3b0be5ec6aed1faad
-modified: 1657737370161
+modified: 1657738569198
 created: 1657737182087
 url: "{{base_url}}/{% request 'name', '', 0 %}"
 name: placeShip
@@ -11,7 +11,19 @@ body:
   mimeType: application/json
   text: |-
     {
-    	"gridSize": 100
+      "userId": "string",
+      "gameId": "7cc114ab-2656-4295-b4c2-0a6088557ec9",
+      "shipName": "battleship",
+      "coordinates": [
+        {
+          "x": 30,
+          "y": 50
+        },
+        {
+          "x": 34,
+          "y": 50
+        }
+      ]
     }
 parameters: []
 headers:
