@@ -16,10 +16,12 @@
   },
   "devDependencies": {
     "serverless": "^3.20.0",
-    "serverless-dynamodb-local": "^0.2.40"
+    "serverless-offline": "^8.8.1",
+    "serverless-dynamodb-local": "0.2.30"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "offline": "sls offline",
+    "dynamodb": "sls dynamodb start"
   },
   "repository": {
     "type": "git",
