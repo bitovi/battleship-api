@@ -4,7 +4,7 @@ const { getDefaultRoleAssumerWithWebIdentity } = require("@aws-sdk/client-sts");
 const { defaultProvider } = require("@aws-sdk/credential-provider-node");
 const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDB } = require("@aws-sdk/client-dynamodb");
-const { AWS_REGION, GAMES_TABLE_NAME, IS_OFFLINE } = process.env;
+const { AWS_REGION, GAMES_TABLE_NAME, AWS_DYNAMO_ENDPOINT } = process.env;
 const createError = require("http-errors");
 const { faker } = require("@faker-js/faker");
 const createUser = require("./generateToken");
@@ -12,20 +12,21 @@ const createUser = require("./generateToken");
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
 });
-
+const configuration = AWS_DYNAMO_ENDPOINT
+  ? {
+      credentials: {
+        accessKeyId: "accessKeyId",
+        secretAccessKey: "secretAccessKey",
+      },
+      endpoint: AWS_DYNAMO_ENDPOINT,
+    }
+  : {
+      credentialDefaultProvider: credentialProvider,
+    };
 const dynamoClient = DynamoDBDocument.from(
   new DynamoDB({
     region: AWS_REGION,
-    credentialDefaultProvider: credentialProvider,
-    ...(IS_OFFLINE
-      ? {
-          endpoint: "http://localhost:8000",
-          credentials: {
-            accessKeyId: "accessKeyId",
-            secretAccessKey: "secretAccessKey",
-          },
-        }
-      : {}),
+    ...configuration,
   })
 );
 
