@@ -18,7 +18,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "serverless offline"
+    "start": "serverless offline",
+    "debug": "export SLS_DEBUG=* && node --inspect ./node_modules/.bin/serverless offline",
+    "setup:dynamodb": "sls dynamodb install --localPath ./bin"
   },
   "repository": {
     "type": "git",
