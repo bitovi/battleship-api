@@ -12,6 +12,12 @@ provider:
       Resource: '*'
   environment:
     GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
+custom:
+  dynamodb:
+    start:
+      migrate: true
+      stages: 
+        - dev
 functions:
   createGame:
     handler: createGame/index.handler
@@ -32,3 +38,6 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
