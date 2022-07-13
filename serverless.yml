@@ -19,6 +19,20 @@ custom:
       dynamoEndpoint: 'http://localhost:8000'
     prod:
       dynamoEndpoint: ''
+  dynamodb:
+  # If you only want to use DynamoDB Local in some stages, declare them here
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+    # Uncomment only if you already have a DynamoDB running locally
+    # noStart: true      
 functions:
   createGame:
     handler: createGame/index.handler
@@ -63,21 +77,6 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-custom:
-  dynamodb:
-  # If you only want to use DynamoDB Local in some stages, declare them here
-    stages:
-      - dev
-    start:
-      port: 8000
-      inMemory: true
-      heapInitial: 200m
-      heapMax: 1g
-      migrate: true
-      seed: true
-      convertEmptyValues: true
-    # Uncomment only if you already have a DynamoDB running locally
-    # noStart: true
 plugins:
   - serverless-dynamodb-local
   - serverless-offline
