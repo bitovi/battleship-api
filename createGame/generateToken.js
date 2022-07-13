@@ -1,4 +1,3 @@
-const { JWT_SECRET_KEY } = process.env;
 const { faker } = require('@faker-js/faker');
 const jwt = require('jsonwebtoken');
 
