@@ -49,5 +49,5 @@ custom:
     # Uncomment only if you already have a DynamoDB running locally
     # noStart: true
 plugins:
-  - serverless-offline
   - serverless-dynamodb-local
+  - serverless-offline
