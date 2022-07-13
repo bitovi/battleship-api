@@ -17,10 +17,10 @@
     "serverless-offline": "^8.8.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "serverless offline",
+    "start:dynamo": "sls dynamodb start",
     "debug": "export SLS_DEBUG=* && node --inspect ./node_modules/.bin/serverless offline",
-    "setup:dynamodb": "sls dynamodb install --localPath ./bin"
+    "init:dynamo": "sls dynamodb install --localPath ./bin"
   },
   "repository": {
     "type": "git",
