@@ -11,7 +11,7 @@ const credentialProvider = defaultProvider({
 });
 
 const options = {
-    credentialProviderDefault: credentialProvider,
+    credentialDefaultProvider: credentialProvider,
     region: AWS_REGION
 }
 
