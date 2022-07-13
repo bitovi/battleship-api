@@ -4,10 +4,10 @@ const { getDefaultRoleAssumerWithWebIdentity } = require("@aws-sdk/client-sts");
 const { defaultProvider } = require("@aws-sdk/credential-provider-node");
 const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDB } = require("@aws-sdk/client-dynamodb");
-const { AWS_REGION, GAMES_TABLE_NAME } = process.env;
+const { AWS_REGION, GAMES_TABLE_NAME, IS_OFFLINE } = process.env;
 const createError = require("http-errors");
-const { faker } = require('@faker-js/faker');
-const createUser = require('./generateToken');
+const { faker } = require("@faker-js/faker");
+const createUser = require("./generateToken");
 
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
@@ -16,12 +16,16 @@ const credentialProvider = defaultProvider({
 const dynamoClient = DynamoDBDocument.from(
   new DynamoDB({
     region: AWS_REGION,
-    endpoint: "http://localhost:8000",
-    credentials: {
-      accessKeyId: "accessKeyId",
-      secretAccessKey: "secretAccessKey",
-    },
     credentialDefaultProvider: credentialProvider,
+    ...(IS_OFFLINE
+      ? {
+          endpoint: "http://localhost:8000",
+          credentials: {
+            accessKeyId: "accessKeyId",
+            secretAccessKey: "secretAccessKey",
+          },
+        }
+      : {}),
   })
 );
 
@@ -30,22 +34,22 @@ module.exports.handler = async (event) => {
   const id = faker.datatype.uuid();
   const gameShips = [
     {
-      "name": "Arizona Battleship",
-      "size": 4
-    }
+      name: "Arizona Battleship",
+      size: 4,
+    },
   ];
   const documentPutResult = await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Item: {
       id,
-      ships: gameShips
+      ships: gameShips,
     },
   });
 
-  if(documentPutResult.$metadata.httpStatusCode != 200) {
+  if (documentPutResult.$metadata.httpStatusCode != 200) {
     throw createError(500);
   }
-  
+
   /*const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
     Key: {
@@ -60,10 +64,14 @@ module.exports.handler = async (event) => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify({
+    body: JSON.stringify(
+      {
         gameId: id,
-        ships: gameShips, 
-        token: createUser({ gameId: id, name: userName })
-      }, null, 2),
+        ships: gameShips,
+        token: createUser({ gameId: id, name: userName }),
+      },
+      null,
+      2
+    ),
   };
 };
