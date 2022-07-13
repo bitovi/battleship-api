@@ -29,12 +29,20 @@ module.exports.handler = async (event) => {
     body.userName = new Date();
   }
 
+  if (!body.shipName) {
+    body.shipName = userName + "'s Ship"
+  }
+
+  if (!body.shipSize) {
+    body.shipSize = 4
+  }
+
   const { gridSize, userName } = body;
 
   const ships = [
     {
-      name: userName + "'s Ship",
-      size: 4
+      name: body.shipName,
+      size: body.shipSize
     }
   ]
 
