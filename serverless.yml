@@ -12,14 +12,14 @@ provider:
       Resource: '*'
   environment:
     GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
+    AWS_DYNAMO_ENDPOINT: ${self:custom.env.${opt:stage, 'dev'}.dynamoEndpoint}
+custom:
+  env:
+    dev:
+      dynamoEndpoint: 'http://localhost:8000'
+    prod:
+      dynamoEndpoint: ''
 functions:
-  debugDeploy:
-    handler: debugDeploy/index.handler
-    events:
-      - httpApi:
-          path: /debugDeploy
-          method: get
-
   createGame:
     handler: createGame/index.handler
     events:
