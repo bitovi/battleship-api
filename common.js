@@ -17,6 +17,10 @@ const options = {
 
 if (process.env.IS_OFFLINE) {
     options.endpoint = "http://localhost:8000"
+    options.credentials = {
+        accessKeyId: 'accessKeyId',
+        secretAccessKey: 'secretAccessKey'
+    }
 }
 
 
