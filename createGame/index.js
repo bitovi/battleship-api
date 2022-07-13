@@ -35,6 +35,8 @@ module.exports.handler = async (event) => {
   const creatorUserName = body.name || 'host'
   const creatorUserToken = generateTokenFromPayload({ id, name: creatorUserName })
 
+  const grid = {}
+
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Item: {
@@ -52,7 +54,8 @@ module.exports.handler = async (event) => {
           name: creatorUserName,
           token: creatorUserToken
         }
-      ]
+      ],
+      grid: grid
     }
   });
 
