@@ -1,25 +1,9 @@
 "use strict";
 
-const { getDefaultRoleAssumerWithWebIdentity } = require("@aws-sdk/client-sts");
-const { defaultProvider } = require("@aws-sdk/credential-provider-node");
-const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
-const { DynamoDB } = require("@aws-sdk/client-dynamodb");
 const { v4: createUuid } = require("uuid");
-const { AWS_REGION, GAMES_TABLE_NAME } = process.env;
+const { GAMES_TABLE_NAME } = process.env;
 const createError = require("http-errors");
-
-const credentialProvider = defaultProvider({
-  roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
-});
-
-const dynamoClient = DynamoDBDocument.from(new DynamoDB({
-  region: AWS_REGION,
-  endpoint: "http://localhost:8000",
-  credentials: {
-    accessKeyId: 'accessKeyId',
-    secretAccessKey: 'secretAccessKey'
-  },
-}));
+const dynamoClient = require("../common.js").dynamo;
 
 module.exports.handler = async (event) => {
   const id = createUuid();

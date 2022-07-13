@@ -20,6 +20,30 @@ functions:
       - httpApi:
           path: /createGame
           method: post
+  joinGame:
+    handler: joinGame/index.handler
+    events:
+      - httpApi:
+          path: /joinGame
+          method: post     
+  placeShip:
+    handler: placeShip/index.handler
+    events:
+      - httpApi:
+          path: /placeShip
+          method: post      
+  startGame:
+    handler: startGame/index.handler
+    events:
+      - httpApi:
+          path: /startGame
+          method: post        
+  attack:
+    handler: attack/index.handler
+    events:
+      - httpApi:
+          path: /attack
+          method: post                    
 resources:
   Resources:
     GamesTable:
