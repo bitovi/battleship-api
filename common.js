@@ -11,12 +11,9 @@ const credentialProvider = defaultProvider({
 });
 
 module.exports.dynamo = DynamoDBDocument.from(new DynamoDB({
+    credentialProvider: credentialProvider,
     region: AWS_REGION,
-    endpoint: "http://localhost:8000",
-    credentials: {
-        accessKeyId: 'accessKeyId',
-        secretAccessKey: 'secretAccessKey'
-    },
+    endpoint: "http://localhost:8000"
 }));
 
 

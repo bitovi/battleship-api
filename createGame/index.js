@@ -8,7 +8,7 @@ const dynamoClient = require("../common.js").dynamo;
 const privateKey = require("../common.js").privateKey;
 
 module.exports.handler = async (event) => {
-  const gameId = createUuid();
+  const id = createUuid();
   let body = null;
   try {
     body = JSON.parse(event.body);
@@ -41,7 +41,7 @@ module.exports.handler = async (event) => {
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Item: {
-      gameId: gameId,
+      id,
       gridSize: gridSize,
       gameAdmin: userName,
       ships: ships
@@ -51,7 +51,7 @@ module.exports.handler = async (event) => {
   const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
     Key: {
-      gameId
+      id
     }
   })
 

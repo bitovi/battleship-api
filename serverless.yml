@@ -51,11 +51,11 @@ resources:
       Properties:
         TableName: ${self:service}-games
         AttributeDefinitions:
-          - AttributeName: gameId
+          - AttributeName: id
             AttributeType: S
         BillingMode: PAY_PER_REQUEST
         KeySchema:
-          - AttributeName: gameId
+          - AttributeName: id
             KeyType: HASH
 custom:
   dynamodb:
