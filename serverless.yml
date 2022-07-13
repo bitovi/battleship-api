@@ -63,8 +63,4 @@ resources:
             KeyType: HASH
 plugins:
   - serverless-offline
-<<<<<<< HEAD
   - serverless-dynamodb-local
-=======
-  - serverless-dynamodb-local
->>>>>>> 75920eeea6f634d7ccb395726ef5d95732711387
