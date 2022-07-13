@@ -12,7 +12,6 @@ provider:
       Resource: '*'
   environment:
     GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
-    AWS_PROFILE: default
 functions:
   debugDeploy:
     handler: debugDeploy/index.handler

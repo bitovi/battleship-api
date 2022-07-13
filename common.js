@@ -1,9 +1,9 @@
 "use strict";
 
-const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
-const { DynamoDB } = require("@aws-sdk/client-dynamodb");
 const { getDefaultRoleAssumerWithWebIdentity } = require("@aws-sdk/client-sts");
 const { defaultProvider } = require("@aws-sdk/credential-provider-node");
+const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDB } = require("@aws-sdk/client-dynamodb");
 const { AWS_REGION } = process.env;
 
 const credentialProvider = defaultProvider({
@@ -11,8 +11,8 @@ const credentialProvider = defaultProvider({
 });
 
 const options = {
-    credentialDefaultProvider: credentialProvider,
-    region: AWS_REGION
+    region: AWS_REGION,
+    credentialDefaultProvider: credentialProvider
 }
 
 if (process.env.IS_OFFLINE) {

@@ -4,8 +4,17 @@ const { GAMES_TABLE_NAME } = process.env;
 const dynamoClient = require("../common.js").dynamo;
 const privateKey = require("../common.js").privateKey;
 const options = require('../common.js').options;
+const createError = require("http-errors");
 
 module.exports.handler = async (event) => {
+
+
+  try {
+    
+  } catch (err) {
+    return createError(err);
+  }
+
   return {
     statusCode: 200,
     body: JSON.stringify({
