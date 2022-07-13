@@ -11,13 +11,14 @@ provider:
         - dynamodb:*
       Resource: '*'
   environment:
-    GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
+    GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName},
+    AWS_PROFILE: default
 functions:
   createGame:
     handler: createGame/index.handler
     events:
       - httpApi:
-          path: /game
+          path: /createGame
           method: post
 resources:
   Resources:
@@ -32,3 +33,6 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
