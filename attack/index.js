@@ -1,26 +1,26 @@
 "use strict";
 
 const { GAMES_TABLE_NAME } = process.env;
-const createError = require("http-errors");
+const { createError } = require("../helpers/error");
 const { dynamoClient } = require("../helpers/dynamodb");
 const { validateUserToken } = require('../helpers/webtoken');
 
 module.exports.handler = async (event) => {
     if (!event.headers.authorization) {
-        throw createError(401, 'missing auth token');
+        return createError(401, 'missing auth token');
     }
 
     // Check that the user has a valid jwt
     validateUserToken(event.headers.authorization);
 
     if (!event.body) {
-        throw createError(400, 'missing name and gameId');
+        return createError(400, 'missing name and gameId');
     }
 
     try {
         event.body = JSON.parse(event.body);
     } catch (err) {
-        throw createError(400, 'missing name and gameId, body not valid JSON');
+        return createError(400, 'missing name and gameId, body not valid JSON');
     }
 
     const { gameId, userId, coordinates } = event.body;
@@ -35,7 +35,7 @@ module.exports.handler = async (event) => {
 
     // Does this game exist
     if (!documentGetResult.Item) {
-        throw createError(404, 'game not found');
+        return createError(404, 'game not found');
     }
 
     // Check that the player is in this game
@@ -44,22 +44,22 @@ module.exports.handler = async (event) => {
     });
 
     if (!player) {
-        throw createError(400, "you're not part of this game");
+        return createError(400, "you're not part of this game");
     }
 
     // Check that the game has started
     if (!documentGetResult.Item.gameStarted) {
-        throw createError(400, 'cannot attack until the game starts');
+        return createError(400, 'cannot attack until the game starts');
     }
 
     // Check that the game has started
     if (documentGetResult.Item.gameOver) {
-        throw createError(400, 'cannot attack once the game is over');
+        return createError(400, 'cannot attack once the game is over');
     }
 
     const attackRateLimit = 5 * 1000;
     if (player.lastAttackTime && (new Date() - new Date(player.lastAttackTime)) < attackRateLimit) {
-        throw createError(400, "rate limit");
+        return createError(400, "rate limit");
     }
 
     let didHitSomeone = false;

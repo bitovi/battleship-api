@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const createError = require("http-errors");
+const { createError } = require("../helpers/error");
 const secret = 'Token';
 
 function generateTokenFromPayload(payload) {

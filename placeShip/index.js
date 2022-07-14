@@ -1,26 +1,26 @@
 "use strict";
 
 const { GAMES_TABLE_NAME } = process.env;
-const createError = require("http-errors");
 const { dynamoClient } = require("../helpers/dynamodb");
 const { validateUserToken } = require('../helpers/webtoken');
+const { createError } = require("../helpers/error");
 
 module.exports.handler = async (event) => {
     if (!event.headers.authorization) {
-        throw createError(401, 'missing auth token');
+        return createError(401, 'missing auth token');
     }
 
     // Check that the user has a valid jwt
     validateUserToken(event.headers.authorization);
 
     if (!event.body) {
-        throw createError(400, 'missing name and gameId');
+        return createError(400, 'missing name and gameId');
     }
 
     try {
         event.body = JSON.parse(event.body);
     } catch (err) {
-        throw createError(400, 'missing name and gameId, body not valid JSON');
+        return createError(400, 'missing name and gameId, body not valid JSON');
     }
 
     const { gameId, shipName, coordinates } = event.body;
@@ -35,11 +35,11 @@ module.exports.handler = async (event) => {
 
     // Does this game exist
     if (!documentGetResult.Item) {
-        throw createError(404, 'game not found');
+        return createError(404, 'game not found');
     }
 
     if (documentGetResult.Item.gameStarted) {
-        throw createError(400, 'game has already started');
+        return createError(400, 'game has already started');
     }
 
     // Check that the player is in this game
@@ -48,7 +48,7 @@ module.exports.handler = async (event) => {
     });
 
     if (!player) {
-        throw createError(400, "you're not part of this game");
+        return createError(400, "you're not part of this game");
     }
 
     const gridSize = documentGetResult.Item.gridSize;
@@ -58,19 +58,19 @@ module.exports.handler = async (event) => {
     const { x2, y2 } = coordinates[1];
 
     if (x1 < 0 || x1 > gridSize) {
-        throw createError(400, 'start coord out of bounds');
+        return createError(400, 'start coord out of bounds');
     }
 
     if (y1 < 0 || y1 > gridSize) {
-        throw createError(400, 'start coord out of bounds');
+        return createError(400, 'start coord out of bounds');
     }
 
     if (x2 < 0 || x2 > gridSize) {
-        throw createError(400, 'end coord out of bounds');
+        return createError(400, 'end coord out of bounds');
     }
 
     if (y2 < 0 || y2 > gridSize) {
-        throw createError(400, 'end coord out of bounds');
+        return createError(400, 'end coord out of bounds');
     }
 
     const currentShip = documentGetResult.Item.ships.find((ship) => {
@@ -78,12 +78,12 @@ module.exports.handler = async (event) => {
     });
 
     if (!currentShip) {
-        throw createError(400, 'ship doesnt exist');
+        return createError(400, 'ship doesnt exist');
     }
 
     // Take the players ship info, try and place it in the grid
     if (!placeShip(coordinates[0], coordinates[1], currentShip.size, player)) {
-        throw createError(400, "already a ship here");
+        return createError(400, "already a ship here");
     }
 
     player.shipCount++;
@@ -111,7 +111,7 @@ function placeShip(startCoord, endCoord, shipSize, player) {
         for (let i = startCoord.y; i < startCoord.y + yOffset; i = i + inc) {
             const currentCoord = [startCoord.x + "_" + i];
             if (player.userGrid[currentCoord]) {
-                throw createError(400, "you have a ship at this position");
+                return false;
             }
 
             ship[currentCoord] = { shipId: player.shipCount, hit: false };
@@ -121,13 +121,13 @@ function placeShip(startCoord, endCoord, shipSize, player) {
         for (let i = startCoord.x; i < startCoord.x + xOffset; i = i + inc) {
             const currentCoord = [i + "_" + startCoord.y];
             if (player.userGrid[currentCoord]) {
-                throw createError(400, "you have a ship at this position");
+                return false;
             }
 
             ship[currentCoord] = { shipId: player.shipCount, hit: false };
         }
     } else {
-        throw createError(400, "your ship is invalid");
+        return false;
     }
 
     Object.assign(player.userGrid, ship);
