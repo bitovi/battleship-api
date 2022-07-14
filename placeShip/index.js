@@ -90,16 +90,8 @@ module.exports.handler = async (event) => {
         2
       )
     } : {
-      statusCode: 200,
-      body: JSON.stringify(
-        {
-          userId: userId,
-          gridSize: documentGetResult.Item.gridSize,
-        },
-        null,
-        2
-      )
-    }
+      statusCode: 204
+    };
 
   return responseBody;
 };
