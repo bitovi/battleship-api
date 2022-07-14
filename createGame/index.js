@@ -5,7 +5,7 @@ const { v4: createUuid } = require("uuid");
 const { GAMES_TABLE_NAME } = process.env;
 const createError = require("http-errors");
 const { generateTokenFromPayload } = require('../helpers/webtoken');
-const { dynamoClient } = require("../common");
+const { dynamoClient } = require("../helpers/dynamodb");
 
 module.exports.handler = async (event) => {
   const id = createUuid();

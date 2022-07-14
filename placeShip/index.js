@@ -2,20 +2,18 @@
 
 const { GAMES_TABLE_NAME } = process.env;
 const createError = require("http-errors");
-const { dynamoClient } = require("../common");
+const { dynamoClient } = require("../helpers/dynamodb");
 const { validateUserToken } = require('../helpers/webtoken');
-const { v4 } = require("uuid");
 
 module.exports.handler = async (event) => {
-    const { gameId, userId, shipName, coordinates } = JSON.parse(event.body);
+    const { gameId, shipName, coordinates } = JSON.parse(event.body);
 
     if (!event.headers.authorization) {
         throw createError(401, 'missing auth token');
     }
 
     // Check that the user has a valid jwt
-    const userInfo = validateUserToken(event.headers.authorization);
-
+    validateUserToken(event.headers.authorization);
 
     // Get the game state from the database (hopefully)
     const documentGetResult = await dynamoClient.get({
@@ -79,7 +77,7 @@ module.exports.handler = async (event) => {
     await dynamoClient.put({
         TableName: GAMES_TABLE_NAME,
         Item: documentGetResult.Item
-      });
+    });
 
     return {
         statusCode: 204
