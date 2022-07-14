@@ -32,6 +32,14 @@ const dynamoClient = DynamoDBDocument.from(new DynamoDB({
 module.exports.handler = async (event) => {
   const parsedBody = JSON.parse(event.body);
   const { name, gridSize } = parsedBody;
+
+  if (!name) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({message: "The property 'name' is required"}, null, 2),
+    };
+  }
+
   const gameOwner = new Player({ name });
 
   const game = new Game({owner: gameOwner, gridSize});
