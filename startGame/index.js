@@ -30,7 +30,6 @@ module.exports.handler = async (event) => {
   let errorMessage; 
   if(!isAdmin) errorMessage = "Cannot start game, only user that created game has permission";
   if(body.gameId !== gameId) errorMessage = "Invalid GameId provided for host";
-
   //validate gameId
   const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
