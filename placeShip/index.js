@@ -1,11 +1,10 @@
 "use strict";
 
-// const { v4: createUuid } = require("uuid");
 const { GAMES_TABLE_NAME } = process.env;
 const createError = require("http-errors");
 const jwt = require("jsonwebtoken");
 const dynamoClient = require("../common.js").dynamo;
-// const privateKey = require("../common.js").privateKey;
+const privateKey = require("../common.js").privateKey;
 const {    
   isVerticalCheck,
   getVaryingCord,
@@ -15,9 +14,10 @@ const {
 
 module.exports.handler = async (event) => {
   let body;
-  let header = JSON.parse(event.header)
+  let header;
   try {
     body = JSON.parse(event.body);
+    header = JSON.parse(event.header)
   } catch (err) {
     return {
       statusCode: 400,
@@ -27,7 +27,7 @@ module.exports.handler = async (event) => {
     }
   }
 
-  const payload = jwt.verify(header.token, 'fish')
+  const payload = jwt.verify(header.token, privateKey)
   const {
     gameId,
     userId
@@ -50,7 +50,6 @@ module.exports.handler = async (event) => {
   const varyingCord = getVaryingCord(body.coordinates, isVertical)
   const constCoord = isVertical ? body.coordinates[0].x : body.coordinates[0].y 
   const shipName = body.shipName;
-
   const userShip = {
     shipName: shipName,
     isVertical: isVertical,
@@ -62,8 +61,7 @@ module.exports.handler = async (event) => {
          player.ship = userShip
     }
 }) 
-  const players  =
-  await dynamoClient.put({
+  const players = await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Key: {
       id: gameId
