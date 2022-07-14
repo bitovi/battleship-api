@@ -70,27 +70,18 @@ module.exports = class Game {
       }
     }
     else {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({message: "Expected ship to be horizontal or vertical"}, null, 2),
-      };
-    }
+      throw new GameError(400, "Expected ship to be horizontal or vertical")
+    };
 
     if (gridCellsToUpdate.length !== BattleShip.size) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({message: `Expected ship to have size ${BattleShip.size}`}, null, 2),
-      };
-    } 
+      throw new GameError(400, `Expected ship to have size ${BattleShip.size}`)
+    };
 
     // update grid
     gridCellsToUpdate.forEach(({x, y}) => {
       const cell = this.grid[x]?.[y];
       if (!cell) {
-        return {
-          statusCode: 400,
-          body: JSON.stringify({message: 'Ship is out of bounds'}, null, 2),
-        };
+        throw new GameError(400, 'Ship is out of bounds')
       }
       // put the shipId in the game cell
       cell.shipIds.push(ship.id);
