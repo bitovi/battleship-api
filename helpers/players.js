@@ -4,7 +4,8 @@ function createPlayer(isAdmin, name, token) {
     name,
     token,
     userGrid: {},
-    shipCount: 0
+    shipCount: 0,
+    lastAttackTime: null
   }
 }
 
