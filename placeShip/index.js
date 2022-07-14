@@ -1,15 +1,17 @@
 "use strict";
 
-const { v4: createUuid } = require("uuid");
+// const { v4: createUuid } = require("uuid");
 const { GAMES_TABLE_NAME } = process.env;
 const createError = require("http-errors");
 const jwt = require("jsonwebtoken");
 const dynamoClient = require("../common.js").dynamo;
-const privateKey = require("../common.js").privateKey;
-const {    isVerticalCheck,
+// const privateKey = require("../common.js").privateKey;
+const {    
+  isVerticalCheck,
   getVaryingCord,
   isOutOfBound,
-  isGreaterThanShipSize,} = require("../common.js")
+  isGreaterThanShipSize,
+} = require("../common.js")
 
 module.exports.handler = async (event) => {
   let body;
@@ -25,9 +27,11 @@ module.exports.handler = async (event) => {
     }
   }
 
-  const userId = jwt.verify(header.token, 'fish')
-
-  const gameId = body.gameId ?? '';  
+  const payload = jwt.verify(header.token, 'fish')
+  const {
+    gameId,
+    userId
+  } = payload
   //validate gameId
   const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
@@ -40,30 +44,25 @@ module.exports.handler = async (event) => {
   }
   const gridSize = documentGetResult.Item.gridSize
   const shipSize = documentGetResult.Item.ships[0].shipSize  
-  if (isOutOfBound(body.coordinates,gridSize)) throw createError("Out of Bounds")
-  if (isGreaterThanShipSize(body.coordinates,shipSize)) throw createError("Ship is too big")
-  const isVertical = isVerticalCheck(body.coordinates)
-  const varyingCord = getVaryingCord(coordinates,isVertical)
+  if (isOutOfBound(body.coordinates, gridSize)) throw createError("Out of Bounds")
+  if (isGreaterThanShipSize(body.coordinates, shipSize)) throw createError("Ship is too big")
+  const isVertical = isVerticalCheck(body. coordinates)
+  const varyingCord = getVaryingCord(body.coordinates, isVertical)
   const constCoord = isVertical ? body.coordinates[0].x : body.coordinates[0].y 
-  const gId = body.gameId;
   const shipName = body.shipName;
-  let coordinates = []
-
-  const updatedPlayer = players.map(player => {
-    if(player.userId === userId) {
-        //update the 
-    }
-}) 
-
 
   const userShip = {
     shipName: shipName,
     isVertical: isVertical,
     constCoord: constCoord,
-    coordinates: coordinates,
-
+    varyingCord,
   }
-  const currentPlayer  =
+  const updatedPlayer = players.map(player => {
+    if(player.userId === userId) {
+         player.ship = userShip
+    }
+}) 
+  const players  =
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Key: {
@@ -71,15 +70,7 @@ module.exports.handler = async (event) => {
     },
     Item: {
       ...documentGetResult.Item, 
-      players:[
-        ...documentGetResult.Item.players,
-        {
-          userId,
-          name: newUserName,
-          isAdmin: false,
-          coordinates: [],
-        }
-      ]
+      players: updatedPlayer
     }
   });
 
