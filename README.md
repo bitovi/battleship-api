@@ -49,8 +49,9 @@ Run `sls plugin install -n serverless-dynamodb-local`
 
 Then run `sls dynamodb install`
 
-Add the following under the `custom` section in the `serverless.yml`:
+Add the following to the `serverless.yml`:
 ```yaml
+custom:
   dynamodb:
     stages:
       - dev
