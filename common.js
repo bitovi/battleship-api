@@ -59,8 +59,6 @@ const configuration = AWS_DYNAMO_ENDPOINT ?
     }
 
 
-
-
 const dynamo = DynamoDBDocument.from(new DynamoDB({
     region: AWS_REGION,
     ...configuration,

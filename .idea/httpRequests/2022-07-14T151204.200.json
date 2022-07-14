@@ -1,0 +1,19 @@
+{
+  "ships": [
+    {
+      "name": "host's Ship",
+      "size": 4
+    }
+  ],
+  "id": "c02cb5c4-498d-4237-b4db-c104223c7238",
+  "gridSize": 10,
+  "players": [
+    {
+      "name": "host",
+      "coordinates": [],
+      "isAdmin": true,
+      "userId": "e0907670-18cd-4fbd-adf0-9a6958adbada"
+    }
+  ],
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnYW1lSWQiOiJjMDJjYjVjNC00OThkLTQyMzctYjRkYi1jMTA0MjIzYzcyMzgiLCJ1c2VySWQiOiJlMDkwNzY3MC0xOGNkLTRmYmQtYWRmMC05YTY5NThhZGJhZGEiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NTc4MjU5MjN9.157WvQp9PU4i-MWQiglnEf3yWTfXhrayft8CvId-JoU"
+}

@@ -1,0 +1,19 @@
+{
+  "ships": [
+    {
+      "name": "ben's Ship",
+      "size": 4
+    }
+  ],
+  "id": "193c0f8c-708f-4261-8baa-fbbd736a2cfa",
+  "gridSize": 10,
+  "players": [
+    {
+      "name": "ben",
+      "coordinates": [],
+      "isAdmin": true,
+      "userId": "3746b130-4aa9-4824-9474-71d6583c41d8"
+    }
+  ],
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnYW1lSWQiOiIxOTNjMGY4Yy03MDhmLTQyNjEtOGJhYS1mYmJkNzM2YTJjZmEiLCJ1c2VySWQiOiIzNzQ2YjEzMC00YWE5LTQ4MjQtOTQ3NC03MWQ2NTgzYzQxZDgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NTc4MjYzMzh9.av6N58oQKzb3p6P-moavLc_kAVVzSuskxXbtBmDDsII"
+}

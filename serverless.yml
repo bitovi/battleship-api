@@ -63,7 +63,13 @@ functions:
     events:
       - httpApi:
           path: /attack
-          method: post                    
+          method: post
+  getState:
+    handler: getState/index.handler
+    events:
+      - httpApi:
+          path: /getState
+          method: post
 resources:
   Resources:
     GamesTable:
