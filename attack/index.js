@@ -47,12 +47,15 @@ module.exports.handler = async (event) => {
         throw createError(400, "you're not part of this game");
     }
 
+    // @TODO Do Attack Stuff Here!
+
     await dynamoClient.put({
         TableName: GAMES_TABLE_NAME,
         Item: documentGetResult.Item
     });
 
     return {
-        statusCode: 204
+        statusCode: 200,
+        body: JSON.stringify({})
     }
 };
