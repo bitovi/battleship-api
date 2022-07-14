@@ -30,7 +30,7 @@ const dynamoClient = DynamoDBDocument.from(new DynamoDB({
 module.exports.handler = async (event) => {
   const id = createUuid();
 
-  const body = JSON.parse(event.body)
+  const body = JSON.parse(event.body) || {}
   const gridSize = body.gridSize || 10
   const creatorUserName = body.name || 'host'
   const creatorUserToken = generateTokenFromPayload({ id, name: creatorUserName })
