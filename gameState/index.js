@@ -8,26 +8,21 @@ const { dynamoClient } = require("../helpers/dynamodb");
 
 module.exports.handler = async (event) => {
   if (!event.body) {
-    throw createError(400, 'missing name and gameId');
+    throw createError(400, 'missing body');
   }
 
   try {
     event.body = JSON.parse(event.body);
   } catch (err) {
-    throw createError(400, 'missing name and gameId, body not valid JSON');
+    throw createError(400, 'missing gameId, body not valid JSON');
   }
 
-  const { name, gameId } = event.body;
-
-  if (!name) {
-    throw createError(400, 'name is required');
-  }
+  const { gameId } = event.body;
 
   if (!gameId) {
     throw createError(400, 'gameId is required');
   }
 
-  const userToken = generateTokenFromPayload({ gameId: gameId, name: name })
   const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
     Key: {
@@ -39,28 +34,10 @@ module.exports.handler = async (event) => {
     throw createError(404, 'game not found');
   }
 
-  if (documentGetResult.Item.gameStarted) {
-    throw createError(400, 'cannot join a game in progress');
-  }
-
-  // Add this new player to the game
-  documentGetResult.Item.players.push(createPlayer(false, name, userToken));
-
-  await dynamoClient.put({
-    TableName: GAMES_TABLE_NAME,
-    Item: documentGetResult.Item
-  });
-
-  const result = {
-    userId: name,
-    gridSize: documentGetResult.Item.gridSize,
-    token: userToken
-  }
-
   return {
     statusCode: 200,
     body: JSON.stringify(
-      result,
+      documentGetResult.Item,
       null,
       2
     )

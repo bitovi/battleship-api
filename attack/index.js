@@ -47,7 +47,49 @@ module.exports.handler = async (event) => {
         throw createError(400, "you're not part of this game");
     }
 
-    // @TODO Do Attack Stuff Here!
+    // Check that the game has started
+    if (!documentGetResult.Item.gameStarted) {
+        throw createError(400, 'cannot attack until the game starts');
+    }
+
+    const attackRateLimit = 5 * 1000;
+    if (player.lastAttackTime && (new Date() - new Date(player.lastAttackTime)) < attackRateLimit) {
+        throw createError(400, "rate limit");
+    }
+
+    let didHitSomeone = false;
+    let isSomeoneAlive = false;
+
+    const attackCoord = coordinates.x + "_" + coordinates.y;
+    documentGetResult.Item.players.forEach((player) => {
+        if (player.token === event.headers.authorization) {
+            return;
+        }
+
+        const currentGrid = player.userGrid[attackCoord];
+        if (currentGrid) {
+            if (!currentGrid.hit) {
+                didHitSomeone = true;
+                player.playerHp--;
+            }
+            currentGrid.hit = true;
+        }
+
+        if (player.playerHp > 0) {
+            isSomeoneAlive = true;
+        }
+    });
+
+    player.lastAttackTime = Date.now();
+
+    const result = {
+        "hit": didHitSomeone,
+        "gameOver": !isSomeoneAlive,
+        "winner": !isSomeoneAlive && didHitSomeone
+    }
+
+    // Update the game state to make it as started
+    documentGetResult.Item.gameOver = !isSomeoneAlive;
 
     await dynamoClient.put({
         TableName: GAMES_TABLE_NAME,
@@ -56,6 +98,6 @@ module.exports.handler = async (event) => {
 
     return {
         statusCode: 200,
-        body: JSON.stringify({})
+        body: JSON.stringify(result)
     }
 };

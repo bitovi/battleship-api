@@ -17,17 +17,12 @@ module.exports.handler = async (event) => {
     throw createError(400, 'missing name and gameId, body not valid JSON');
   }
 
-  const { name, gameId } = event.body;
-
-  if (!name) {
-    throw createError(400, 'name is required');
-  }
+  const { gameId } = event.body;
 
   if (!gameId) {
     throw createError(400, 'gameId is required');
   }
 
-  const userToken = generateTokenFromPayload({ gameId: gameId, name: name })
   const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
     Key: {
@@ -39,28 +34,41 @@ module.exports.handler = async (event) => {
     throw createError(404, 'game not found');
   }
 
-  if (documentGetResult.Item.gameStarted) {
-    throw createError(400, 'cannot join a game in progress');
+  // Check that the player is in this game
+  const player = documentGetResult.Item.players.find((player) => {
+    return player.token === event.headers.authorization;
+  });
+
+  if (!player) {
+    throw createError(400, "you're not part of this game");
   }
 
-  // Add this new player to the game
-  documentGetResult.Item.players.push(createPlayer(false, name, userToken));
+  if (!player.isAdmin) {
+    throw createError(400, "only the game owner can start it");
+  }
+
+  if (documentGetResult.Item.players.length < 2) {
+    throw createError(400, "need more players to start");
+  }
+
+  if (documentGetResult.Item.players.forEach((player) => {
+    if (player.shipCount !== documentGetResult.Item.ships.length) {
+      throw createError(400, "not all players have placed their ships");
+    }
+  }));
+
+  // Update the game state to make it as started
+  documentGetResult.Item.gameStarted = true;
 
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Item: documentGetResult.Item
   });
 
-  const result = {
-    userId: name,
-    gridSize: documentGetResult.Item.gridSize,
-    token: userToken
-  }
-
   return {
     statusCode: 200,
     body: JSON.stringify(
-      result,
+      {},
       null,
       2
     )

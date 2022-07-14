@@ -1,6 +1,5 @@
 "use strict";
 
-
 const { v4: createUuid } = require("uuid");
 const { GAMES_TABLE_NAME } = process.env;
 const createError = require("http-errors");
@@ -39,7 +38,9 @@ module.exports.handler = async (event) => {
       players: [
         createPlayer(true, creatorUserName, creatorUserToken)
       ],
-      grid: {}
+      grid: {},
+      gameStarted: false,
+      gameOver: false
     }
   });
 

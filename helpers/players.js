@@ -5,6 +5,7 @@ function createPlayer(isAdmin, name, token) {
     token,
     userGrid: {},
     shipCount: 0,
+    playerHp: 0,
     lastAttackTime: null
   }
 }

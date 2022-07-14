@@ -38,6 +38,10 @@ module.exports.handler = async (event) => {
         throw createError(404, 'game not found');
     }
 
+    if (documentGetResult.Item.gameStarted) {
+        throw createError(400, 'game has already started');
+    }
+
     // Check that the player is in this game
     const player = documentGetResult.Item.players.find((player) => {
         return player.token === event.headers.authorization;
@@ -83,6 +87,7 @@ module.exports.handler = async (event) => {
     }
 
     player.shipCount++;
+    player.playerHp = player.playerHp + currentShip.size;
 
     await dynamoClient.put({
         TableName: GAMES_TABLE_NAME,
