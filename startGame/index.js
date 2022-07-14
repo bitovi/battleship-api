@@ -1,8 +1,6 @@
 'use strict';
 
-const BattleShip = require('../types/ships/BattleShip');
 const Game = require('../types/Game');
-const Player = require('../types/Player');
 const { getUserIdFromToken } = require('../token');
 const { getDefaultRoleAssumerWithWebIdentity } = require("@aws-sdk/client-sts");
 const { defaultProvider } = require("@aws-sdk/credential-provider-node");
