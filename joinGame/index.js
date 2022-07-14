@@ -7,7 +7,7 @@ const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { AWS_REGION, GAMES_TABLE_NAME, AWS_DYNAMO_ENDPOINT } = process.env;
 const { v4: createUuid } = require('uuid');
 const createUser = require('../jwt/generateToken');
-const casual = require('casual');
+const error = require('../utils/error');
 
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
@@ -31,48 +31,20 @@ const dynamoClient = DynamoDBDocument.from(
 );
 //TODO: Check if we can use middlewares (jsonbodyparser)
 module.exports.handler = async (event) => {
-  const body = JSON.parse(event.body);
-
   if (!event.body) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify(
-        {
-          error: 'Fill the params',
-        },
-        null,
-        2
-      ),
-    };
+    return error(400, 'Body not found.');
   }
+  const body = JSON.parse(event.body);
 
   const { gameId: id } = body;
   const { userName } = body;
 
   if (!id) {
-    return {
-      statusCode: 404,
-      body: JSON.stringify(
-        {
-          message: 'Game not found',
-        },
-        null,
-        2
-      ),
-    };
+    return error(404, 'Game not found.');
   }
 
   if (!userName) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify(
-        {
-          message: 'Name is required',
-        },
-        null,
-        2
-      ),
-    };
+    return error(400, 'Name is required.');
   }
 
   const game = await dynamoClient.get({
@@ -83,16 +55,6 @@ module.exports.handler = async (event) => {
   });
 
   if (!game.Item) {
-    return {
-      statusCode: 404,
-      body: JSON.stringify(
-        {
-          message: 'Game not found',
-        },
-        null,
-        2
-      ),
-    };
   }
 
   const userId = createUuid();
