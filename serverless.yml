@@ -12,6 +12,27 @@ provider:
       Resource: '*'
   environment:
     GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
+    AWS_DYNAMO_ENDPOINT: ${self:custom.env.${opt:stage, 'dev'}.dynamoEndpoint}
+custom:
+  env:
+    dev:
+      dynamoEndpoint: 'http://localhost:8000'
+    prod:
+      dynamoEndpoint: ''
+  dynamodb:
+  # If you only want to use DynamoDB Local in some stages, declare them here
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+    # Uncomment only if you already have a DynamoDB running locally
+    # noStart: true   
 functions:
   createGame:
     handler: createGame/index.handler
@@ -19,6 +40,36 @@ functions:
       - httpApi:
           path: /game
           method: post
+  placeShip:
+    handler: placeShip/index.handler
+    events:
+      - httpApi:
+          path: /placeShip
+          method: post          
+  joinGame:
+    handler: joinGame/index.handler
+    events:
+      - httpApi:
+          path: /joinGame
+          method: post        
+  attack:
+    handler: attack/index.handler
+    events:
+      - httpApi:
+          path: /attack
+          method: post          
+  startGame:
+    handler: startGame/index.handler
+    events:
+      - httpApi:
+          path: /startGame
+          method: post      
+  gameState:
+    handler: gameState/index.handler
+    events:
+      - httpApi:
+          path: /gameState
+          method: post    
 resources:
   Resources:
     GamesTable:
@@ -32,3 +83,6 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
