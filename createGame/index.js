@@ -5,7 +5,7 @@ const { defaultProvider } = require('@aws-sdk/credential-provider-node');
 const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
 const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { AWS_REGION, GAMES_TABLE_NAME, AWS_DYNAMO_ENDPOINT } = process.env;
-const { faker } = require('@faker-js/faker');
+const { v4: createUuid } = require('uuid');
 const createUser = require('../jwt/generateToken');
 
 const credentialProvider = defaultProvider({
@@ -31,7 +31,7 @@ const dynamoClient = DynamoDBDocument.from(
 
 module.exports.handler = async (event) => {
   const { userName } = JSON.parse(event.body);
-  const id = faker.datatype.uuid();
+  const id = createUuid();
   const gameShips = [
     {
       name: 'Arizona Battleship',

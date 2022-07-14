@@ -1,5 +1,6 @@
 const { JWT_SECRET_KEY } = process.env;
-const { faker } = require('@faker-js/faker');
+const casual = require('casual');
+const { v4: createUuid } = require('uuid');
 const jwt = require('jsonwebtoken');
 
 function generateJWTToken(payload = {}) {
@@ -8,14 +9,14 @@ function generateJWTToken(payload = {}) {
 }
 
 function createUser({ gameId, name }) {
-  const userId = faker.datatype.uuid();
-  let specialName = name ? name : faker.animal.type().toUpperCase();
+  const userId = createUuid();
+  let specialName = name ?? casual.name().toUpperCase();
   const userName =
-    faker.word.adjective().toUpperCase() +
+    casual.name().toUpperCase() +
     ' ' +
     specialName +
     ' ' +
-    faker.music.songName().toUpperCase();
+    casual.name().toUpperCase();
   let jwtToken = generateJWTToken({ gameId, userName, userId });
   return jwtToken;
 }
