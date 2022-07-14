@@ -11,34 +11,35 @@ function isVerticalCheck(coords) {
 }
 
 function isOutOfBound(coords, gridSize) {
-    console.log(gridSize)
-    return coords[0].x < 0 || coords[1].x > gridSize || coords[0].y < 0 || coords[1].y > gridSize
+    return coords[0].x < 0 || coords[1].x > gridSize || coords[0].y < 0 || coords[1].y > gridSize;
 }
 
 function isGreaterThanShipSize(coords, shipSize) {
-    return Math.abs(coords[0].x-coords[1].x) >  shipSize|| Math.abs(coords[0].y-coords[1].y) >  shipSize
+    return Math.abs(coords[0].x - coords[1].x) > shipSize || Math.abs(coords[0].y - coords[1].y) > shipSize;
 }
 
-function getVaryingCord(coords, isVertical){
+function getVaryingCord(coords, isVertical) {
     const s = isVertical ? 'y' : 'x';
     return coords[0][s] < coords[1][s] ? coords[0][s] : coords[1][s];
 }
+
 function checkAttack(ship, place, shipSize) {
     const x = place[0];
     const y = place[1];
     const staticCord = ship.isVertical ? y : x;
     const cord = ship.isVertical ? x : y;
-    if(staticCord !== ship.staticCord) return false;
+    if (staticCord !== ship.staticCord) return false;
     return shipSize > Math.abs(cord - ship.varyingCord);
 }
+
 function isEliminated(ship, place, shipSize) {
     const x = place[0];
     const y = place[1];
     const staticCord = ship.isVertical ? y : x;
     const cord = ship.isVertical ? x : y;
-    if(staticCord !== ship.staticCord) return false;
+    if (staticCord !== ship.staticCord) return false;
     const sub = Math.abs(cord - ship.varyingCord);
-    if(sub > shipSize) return false;
+    if (sub > shipSize) return false;
     return ship.eliminated[sub] === 1;
 }
 
