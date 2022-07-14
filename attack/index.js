@@ -52,6 +52,11 @@ module.exports.handler = async (event) => {
         throw createError(400, 'cannot attack until the game starts');
     }
 
+    // Check that the game has started
+    if (documentGetResult.Item.gameOver) {
+        throw createError(400, 'cannot attack once the game is over');
+    }
+
     const attackRateLimit = 5 * 1000;
     if (player.lastAttackTime && (new Date() - new Date(player.lastAttackTime)) < attackRateLimit) {
         throw createError(400, "rate limit");
