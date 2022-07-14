@@ -39,6 +39,7 @@ module.exports.handler = async (event) => {
       id,
       gridSize: gridSize,
       ships: ships,
+      status: 'pending',
       players: [
         {
           userId,
