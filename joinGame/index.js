@@ -37,8 +37,15 @@ module.exports.handler = async (event) => {
     return {
       statusCode: 400,
       body: JSON.stringify({message: "The property 'name' is required"}, null, 2),
-  };
-}
+    };
+  }
+
+  if (!gameId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({message: "The property 'gameId' is required"}, null, 2),
+    };
+  }
 
   const player = new Player({ name });
 
