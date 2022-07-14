@@ -54,12 +54,16 @@ module.exports.handler = async (event) => {
   const varyingCord = getVaryingCord(body.coordinates, isVertical);
   const constCoord = isVertical ? body.coordinates[0].x : body.coordinates[0].y;
   const shipName = body.shipName;
+  const eliminated = [];
+  for (let index = 0; index < shipSize; index++) {
+    eliminated.push(0);
+  }
   const userShip = {
     shipName: shipName,
-    isVertical: isVertical,
-    constCoord: constCoord,
+    isVertical,
+    constCoord,
     varyingCord,
-    eliminated: [0,0,0,0],
+    eliminated,
   };
 
   const updatedPlayer = documentGetResult.Item.players.map(player => {
