@@ -9,7 +9,7 @@ const privateKey = require("../common.js").privateKey;
 
 module.exports.handler = async (event) => {
   const id = createUuid();
-  let body = null;
+  let body;
   try {
     body = JSON.parse(event.body);
   } catch (err) {
@@ -21,28 +21,16 @@ module.exports.handler = async (event) => {
     }
   }
 
-  if (!body.gridSize) {
-    body.gridSize = 10;
-  }
-
-  if (!body.userName) {
-    body.userName = new Date();
-  }
-
-  if (!body.shipName) {
-    body.shipName = body.userName + "'s Ship"
-  }
-
-  if (!body.shipSize) {
-    body.shipSize = 4
-  }
-
-  const { gridSize, userName } = body;
+  gridSize = body.gridSize ?? 10
+  hostName = body.userName ?? 'host'
+  shipName = hostName + "'s Ship"
+  shipSize = body.shipSize ?? 4
+  const userId = createUuid();
 
   const ships = [
     {
-      name: body.shipName,
-      size: body.shipSize
+      name: shipName,
+      size: shipSize
     }
   ]
 
@@ -51,8 +39,15 @@ module.exports.handler = async (event) => {
     Item: {
       id,
       gridSize: gridSize,
-      gameAdmin: userName,
-      ships: ships
+      ships: ships,
+      players: [
+        {
+          userId,
+          name: hostName,
+          isAdmin: true,
+          coordinates: [],
+        }
+      ]
     }
   });
 
@@ -67,7 +62,7 @@ module.exports.handler = async (event) => {
     throw createError(500);
   }
 
-  documentGetResult.Item.token = jwt.sign({ gameId: id }, privateKey, {});
+  documentGetResult.Item.token = jwt.sign({ gameId: id, userId }, privateKey, {});
 
   return {
     statusCode: 200,
