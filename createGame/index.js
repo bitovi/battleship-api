@@ -26,7 +26,6 @@ module.exports.handler = async (event) => {
   const shipName = hostName + "'s Ship";
   const shipSize = body.shipSize ?? 4;
   const userId = createUuid();
-
   const ships = [
     {
       name: shipName,
@@ -44,7 +43,8 @@ module.exports.handler = async (event) => {
         {
           userId,
           name: hostName,
-          isAdmin: true
+          isAdmin: true,
+          coordinates: []
         }
       ]
     }
