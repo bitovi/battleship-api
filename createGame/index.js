@@ -1,13 +1,12 @@
-"use strict";
+'use strict';
 
-const { getDefaultRoleAssumerWithWebIdentity } = require("@aws-sdk/client-sts");
-const { defaultProvider } = require("@aws-sdk/credential-provider-node");
-const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
-const { DynamoDB } = require("@aws-sdk/client-dynamodb");
+const { getDefaultRoleAssumerWithWebIdentity } = require('@aws-sdk/client-sts');
+const { defaultProvider } = require('@aws-sdk/credential-provider-node');
+const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDB } = require('@aws-sdk/client-dynamodb');
 const { AWS_REGION, GAMES_TABLE_NAME, AWS_DYNAMO_ENDPOINT } = process.env;
-const createError = require("http-errors");
-const { faker } = require("@faker-js/faker");
-const createUser = require("./generateToken");
+const { faker } = require('@faker-js/faker');
+const createUser = require('../jwt/generateToken');
 
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
@@ -15,8 +14,8 @@ const credentialProvider = defaultProvider({
 const configuration = AWS_DYNAMO_ENDPOINT
   ? {
       credentials: {
-        accessKeyId: "accessKeyId",
-        secretAccessKey: "secretAccessKey",
+        accessKeyId: 'accessKeyId',
+        secretAccessKey: 'secretAccessKey',
       },
       endpoint: AWS_DYNAMO_ENDPOINT,
     }
@@ -35,11 +34,11 @@ module.exports.handler = async (event) => {
   const id = faker.datatype.uuid();
   const gameShips = [
     {
-      name: "Arizona Battleship",
+      name: 'Arizona Battleship',
       size: 4,
     },
   ];
-  
+
   try {
     await dynamoClient.put({
       TableName: GAMES_TABLE_NAME,
@@ -51,7 +50,7 @@ module.exports.handler = async (event) => {
   } catch (err) {
     throw new Error(err.message);
   }
-  
+
   return {
     statusCode: 200,
     body: JSON.stringify(
