@@ -1,31 +1,11 @@
 "use strict";
 
-const { getDefaultRoleAssumerWithWebIdentity } = require("@aws-sdk/client-sts");
-const { defaultProvider } = require("@aws-sdk/credential-provider-node");
-const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
-const { DynamoDB } = require("@aws-sdk/client-dynamodb");
-const { v4: createUuid } = require("uuid");
-const { AWS_REGION, GAMES_TABLE_NAME, AWS_DYNAMO_ENDPOINT } = process.env;
-const createError = require("http-errors");
-const { generateTokenFromPayload } = require('../helpers/webtoken')
 
-const credentialProvider = defaultProvider({
-  roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
-});
-const configuration = AWS_DYNAMO_ENDPOINT ?
-  {
-    credentials: {
-      accessKeyId: 'accessKeyId',
-      secretAccessKey: 'secretAccessKey'
-    },
-    endpoint: AWS_DYNAMO_ENDPOINT
-  } : {
-    credentialDefaultProvider: credentialProvider
-  }
-const dynamoClient = DynamoDBDocument.from(new DynamoDB({
-  region: AWS_REGION,
-  ...configuration,
-}));
+const { v4: createUuid } = require("uuid");
+const { GAMES_TABLE_NAME } = process.env;
+const createError = require("http-errors");
+const { generateTokenFromPayload } = require('../helpers/webtoken');
+const { dynamoClient } = require("../common");
 
 module.exports.handler = async (event) => {
   const id = createUuid();
@@ -33,7 +13,7 @@ module.exports.handler = async (event) => {
   const body = JSON.parse(event.body)
   const gridSize = body.gridSize || 10
   const creatorUserName = body.name || 'host'
-  const creatorUserToken = generateTokenFromPayload({ id, name: creatorUserName })
+  const creatorUserToken = generateTokenFromPayload({ gameId: id, name: creatorUserName })
 
   const grid = {}
 
@@ -52,7 +32,9 @@ module.exports.handler = async (event) => {
         {
           isAdmin: true,
           name: creatorUserName,
-          token: creatorUserToken
+          token: creatorUserToken,
+          userGrid: {},
+          shipCount: 0
         }
       ],
       grid: grid

@@ -1,18 +1,22 @@
 const jwt = require('jsonwebtoken')
+const createError = require("http-errors");
+const secret = 'Token';
 
 function generateTokenFromPayload(payload) {
-  const salt = 'Token'
-  const token = jwt.sign(payload, salt)
+  const token = jwt.sign(payload, secret)
   return token
 }
 
-function generatePayloadFromToken(token) {
-  const salt = 'Token'
-  const payload = jwt.verify(token, salt)
-  return payload
+function validateUserToken(token) {
+  try {
+    return jwt.verify(token, secret);
+  } catch (err) {
+    return createError(403, 'Unable to validate token');
+  }
 }
 
+
 module.exports = {
-  generatePayloadFromToken,
+  validateUserToken,
   generateTokenFromPayload
 }
