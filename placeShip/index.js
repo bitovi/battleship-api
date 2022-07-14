@@ -6,14 +6,24 @@ const { dynamoClient } = require("../helpers/dynamodb");
 const { validateUserToken } = require('../helpers/webtoken');
 
 module.exports.handler = async (event) => {
-    const { gameId, shipName, coordinates } = JSON.parse(event.body);
-
     if (!event.headers.authorization) {
         throw createError(401, 'missing auth token');
     }
 
     // Check that the user has a valid jwt
     validateUserToken(event.headers.authorization);
+
+    if (!event.body) {
+        throw createError(400, 'missing name and gameId');
+    }
+
+    try {
+        event.body = JSON.parse(event.body);
+    } catch (err) {
+        throw createError(400, 'missing name and gameId, body not valid JSON');
+    }
+
+    const { gameId, shipName, coordinates } = event.body;
 
     // Get the game state from the database (hopefully)
     const documentGetResult = await dynamoClient.get({
@@ -25,7 +35,7 @@ module.exports.handler = async (event) => {
 
     // Does this game exist
     if (!documentGetResult.Item) {
-        throw createError(500);
+        throw createError(404, 'game not found');
     }
 
     // Check that the player is in this game

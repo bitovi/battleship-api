@@ -51,7 +51,13 @@ functions:
     events:
       - httpApi:
           path: /joinGame
-          method: post            
+          method: post        
+  attack:
+    handler: attack/index.handler
+    events:
+      - httpApi:
+          path: /attack
+          method: post                 
 resources:
   Resources:
     GamesTable:

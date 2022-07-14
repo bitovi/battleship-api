@@ -51,7 +51,7 @@ module.exports.handler = async (event) => {
   })
 
   if (!documentGetResult.Item) {
-    throw createError(500);
+    throw createError(404, 'game not found');
   }
 
   const result = {
