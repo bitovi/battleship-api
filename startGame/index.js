@@ -7,12 +7,11 @@ const dynamoClient = require("../common.js").dynamo;
 const privateKey = require("../common.js").privateKey;
 
 module.exports.handler = async (event) => {
-
   let body;
   let header;
   try {
     body = JSON.parse(event.body);
-    header = JSON.parse(event.header)
+    header = event.headers.authorization;
   } catch (err) {
     return {
       statusCode: 400,
@@ -22,15 +21,15 @@ module.exports.handler = async (event) => {
     }
   }
 
-  const payload = jwt.verify(header.token, privateKey)
+  const payload = jwt.verify(header, privateKey);
   const {
     gameId,
     isAdmin
-  } = payload
+  } = payload;
 
-  if(!isAdmin) throw createError("Cannot start game, only user that created game has permission")
-  if(body.gameId !== gameId) throw createError("Invalid GameId provided for host")
-
+  let errorMessage; 
+  if(!isAdmin) errorMessage = "Cannot start game, only user that created game has permission";
+  if(body.gameId !== gameId) errorMessage = "Invalid GameId provided for host";
   //validate gameId
   const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
@@ -53,8 +52,26 @@ module.exports.handler = async (event) => {
     }
   });
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ result: "Game Successfully started!" })
-  };
+  const responseBody = errorMessage ?
+    {
+      statusCode: 400,
+      body: JSON.stringify(
+        {
+          message: errorMessage
+        },
+        null,
+        2
+      )
+    } : {
+      statusCode: 200,
+      body: JSON.stringify(
+        {
+          message: "Game successfully started"
+        },
+        null,
+        2
+      )
+    };
+
+  return responseBody;
 };

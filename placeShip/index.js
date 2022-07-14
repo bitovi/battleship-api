@@ -17,8 +17,7 @@ module.exports.handler = async (event) => {
   let header;
   try {
     body = JSON.parse(event.body);
-    header = event.headers.authorization
-
+    header = event.headers.authorization;
   } catch (err) {
     console.log(err)
     return {
@@ -69,7 +68,7 @@ module.exports.handler = async (event) => {
     return player;
   });
 
-  await dynamoClient.put({
+   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Key: {
       id: gameId
@@ -85,7 +84,7 @@ module.exports.handler = async (event) => {
       statusCode: 400,
       body: JSON.stringify(
         {
-          message: "errorMessage"
+          message: errorMessage
         },
         null,
         2
