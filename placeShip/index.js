@@ -44,31 +44,29 @@ module.exports.handler = async (event) => {
     throw createError('Game ID Entered Does Not Exist');
   }
 
-  const gridSize = documentGetResult.Item.gridSize
+  const gridSize = documentGetResult.Item.gridSize;
 
-  const shipSize = documentGetResult.Item.ships[0].shipSize  
-  if (isOutOfBound(body.coordinates, gridSize)) throw createError("Out of Bounds")
-  if (isGreaterThanShipSize(body.coordinates, shipSize)) throw createError("Ship is too big")
-  const isVertical = isVerticalCheck(body.coordinates)
-  const varyingCord = getVaryingCord(body.coordinates, isVertical)
-  const constCoord = isVertical ? body.coordinates[0].x : body.coordinates[0].y 
+  const shipSize = documentGetResult.Item.ships[0].shipSize;
+  let errorMessage;
+  if (isOutOfBound(body.coordinates, gridSize)) errorMessage = "ship out of bounds"; //out-of-bounds
+  if (isGreaterThanShipSize(body.coordinates, shipSize)) errorMessage = "ship not placed correctly, cannot place diagonoly"; //not-placed-correctly
+  const isVertical = isVerticalCheck(body.coordinates);
+  const varyingCord = getVaryingCord(body.coordinates, isVertical);
+  const constCoord = isVertical ? body.coordinates[0].x : body.coordinates[0].y;
   const shipName = body.shipName;
   const userShip = {
     shipName: shipName,
     isVertical: isVertical,
     constCoord: constCoord,
     varyingCord,
-  }
-
-  console.log(userShip, '🩸')
+  };
 
   const updatedPlayer = documentGetResult.Item.players.map(player => {
-    if(player.userId === userId) {
-         player.ship = userShip
+    if (player.userId === userId) {
+      player.ship = userShip;
     }
-    return player
-})
-  console.log(updatedPlayer, '🩸🩸🩸')
+    return player;
+  });
 
   const players = await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
@@ -81,15 +79,27 @@ module.exports.handler = async (event) => {
     }
   });
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
-        userId: userId,
-        gridSize: documentGetResult.Item.gridSize,
-      },
-      null,
-      2
-    )
-  };
+  const responseBody = errorMessage ?
+    {
+      statusCode: 400,
+      body: JSON.stringify(
+        {
+          message: "errorMessage"
+        },
+        null,
+        2
+      )
+    } : {
+      statusCode: 200,
+      body: JSON.stringify(
+        {
+          userId: userId,
+          gridSize: documentGetResult.Item.gridSize,
+        },
+        null,
+        2
+      )
+    }
+
+  return responseBody;
 };
