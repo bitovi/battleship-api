@@ -49,7 +49,7 @@ module.exports.handler = async (event) => {
           userId,
           name: newUserName,
           isAdmin: false,
-          coordinates: [],
+          coordinates: []
         }
       ]
     }
