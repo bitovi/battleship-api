@@ -1,13 +1,11 @@
 module.exports = class GridCell {
   constructor(payload = {}) {
-    this.wasShot = payload.wasShot ?? false;
-    this.shipId = payload.shipId ?? null;
+    this.shipIds = payload.shipIds ?? [];
   }
 
   serialize() {
     return {
-      hit: this.wasShot,
-      shipId: this.shipId
+      shipIds: this.shipIds
     }
   }
 
