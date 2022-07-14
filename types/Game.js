@@ -11,6 +11,7 @@ module.exports = class Game {
     this.players = payload.players ?? {};
     this.ships = payload.ships ?? {};
     this.owner = payload.owner;
+    this.hasStarted = payload.hasStarted ?? false
   }
 
   placeShip(payload) {
@@ -108,6 +109,29 @@ module.exports = class Game {
     return Array(gridSize).fill().map(() => Array(gridSize).fill(new GridCell()));
   }
 
+  startGame(userId) {
+    if(this.owner.id !== userId) {
+      throw new GameError(403, "Cannot start game, only user that created game has permission")
+    }
+
+    if(this.hasStarted) {
+      throw new GameError(400, "Game already started")
+    }
+
+    const numberOfPlayers = Object.keys(this.players).length
+    if(numberOfPlayers < 2) {
+      throw new GameError(400, `Game has ${numberOfPlayers}. At least 2 players are required`)
+    }
+
+    for(let player in this.players) {
+      if(!this.players[player].ships.length) {
+        throw new GameError(400, 'Each player must place a ship')
+      }
+    }
+
+    this.hasStarted = true;
+  }
+
   serialize() {
     const players = {};
     const ships = {};
@@ -123,7 +147,8 @@ module.exports = class Game {
       grid: this.grid.map(row => row.map(cell => cell.serialize())),
       players,
       ships,
-      owner: this.owner.serialize()
+      owner: this.owner.serialize(),
+      hasStarted: this.hasStarted
     }
   }
 

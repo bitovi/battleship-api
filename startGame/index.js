@@ -1,6 +1,8 @@
 'use strict';
 
+const BattleShip = require('../types/ships/BattleShip');
 const Game = require('../types/Game');
+const Player = require('../types/Player');
 const { getUserIdFromToken } = require('../token');
 const { getDefaultRoleAssumerWithWebIdentity } = require("@aws-sdk/client-sts");
 const { defaultProvider } = require("@aws-sdk/credential-provider-node");
@@ -27,9 +29,9 @@ const dynamoClient = DynamoDBDocument.from(new DynamoDB({
 }));
 
 module.exports.handler = async (event) => {
-
   const parsedBody = JSON.parse(event.body);
   const { gameId } = parsedBody;
+
   let userId;
   try {
     userId = getUserIdFromToken(event)
@@ -42,14 +44,12 @@ module.exports.handler = async (event) => {
     };
   }
 
-  ["gameId", "shipName", "coordinates"].forEach((reqField) => {
-    if(!parsedBody[reqField]) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({message: `The property '${reqField}' is required`}, null, 2),
-      };
-    }
-  })
+  if(!parsedBody["gameId"]) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({message: `The property 'gameId' is required`}, null, 2),
+    };
+  }
 
   const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
@@ -68,8 +68,7 @@ module.exports.handler = async (event) => {
   const game = Game.deserialize(documentGetResult.Item);
 
   try {
-    game.validatePlayer(userId);
-    game.placeShip(parsedBody)
+    game.startGame(userId)
   }
   catch (e) {
     return {

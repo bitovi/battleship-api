@@ -9,7 +9,7 @@ const { defaultProvider } = require("@aws-sdk/credential-provider-node");
 const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDB } = require("@aws-sdk/client-dynamodb");
 const { AWS_REGION, GAMES_TABLE_NAME, AWS_DYNAMO_ENDPOINT } = process.env;
-const createGameError = require("http-GameErrors");
+const createError = require("http-errors");
 
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
@@ -57,7 +57,7 @@ module.exports.handler = async (event) => {
   });
 
   if (!documentGetResult.Item) {
-    throw createGameError(500);
+    throw createError(500);
   }
 
   const returnValue = {

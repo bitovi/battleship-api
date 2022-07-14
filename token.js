@@ -6,7 +6,7 @@ const getTokenForGame = (userId) => {
   return jwt.sign({ userId }, SECRET);
 }
  
-const getIdForUser = (event) => {
+const getUserIdFromToken = (event) => {
   const header = event.headers.authorization;
   const [,tkn] = header.split('Bearer ');
   const {userId} = jwt.verify(tkn, SECRET);
@@ -15,5 +15,5 @@ const getIdForUser = (event) => {
 
 module.exports = {
   getTokenForGame,
-  getIdForUser
+  getUserIdFromToken
 };
