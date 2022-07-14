@@ -59,6 +59,7 @@ module.exports.handler = async (event) => {
     isVertical: isVertical,
     constCoord: constCoord,
     varyingCord,
+    eliminated: [0,0,0,0],
   };
 
   const updatedPlayer = documentGetResult.Item.players.map(player => {
@@ -68,7 +69,7 @@ module.exports.handler = async (event) => {
     return player;
   });
 
-  const players = await dynamoClient.put({
+  await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Key: {
       id: gameId

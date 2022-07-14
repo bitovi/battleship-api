@@ -45,6 +45,7 @@ module.exports.handler = async (event) => {
           userId,
           name: hostName,
           isAdmin: true,
+          isEliminated: false
         }
       ]
     }
