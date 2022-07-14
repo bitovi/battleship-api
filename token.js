@@ -1,5 +1,4 @@
 var jwt = require('jsonwebtoken');
-const GameError = require('./types/GameError');
 const SECRET = 'shhhh';
 
 const getTokenForGame = (userId) => {
