@@ -21,10 +21,10 @@ module.exports.handler = async (event) => {
     }
   }
 
-  gridSize = body.gridSize ?? 10
-  hostName = body.userName ?? 'host'
-  shipName = hostName + "'s Ship"
-  shipSize = body.shipSize ?? 4
+  const gridSize = body.gridSize ?? 10;
+  const hostName = body.userName ?? 'host';
+  const shipName = hostName + "'s Ship";
+  const shipSize = body.shipSize ?? 4;
   const userId = createUuid();
 
   const ships = [
@@ -32,7 +32,7 @@ module.exports.handler = async (event) => {
       name: shipName,
       size: shipSize
     }
-  ]
+  ];
 
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
@@ -44,8 +44,7 @@ module.exports.handler = async (event) => {
         {
           userId,
           name: hostName,
-          isAdmin: true,
-          coordinates: [],
+          isAdmin: true
         }
       ]
     }
@@ -56,7 +55,7 @@ module.exports.handler = async (event) => {
     Key: {
       id
     }
-  })
+  });
 
   if (!documentGetResult.Item) {
     throw createError(500);
