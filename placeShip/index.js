@@ -17,8 +17,10 @@ module.exports.handler = async (event) => {
   let header;
   try {
     body = JSON.parse(event.body);
-    header = JSON.parse(event.header)
+    header = event.headers.authorization
+
   } catch (err) {
+    console.log(err)
     return {
       statusCode: 400,
       body: JSON.stringify({
@@ -26,8 +28,7 @@ module.exports.handler = async (event) => {
       })
     }
   }
-
-  const payload = jwt.verify(header.token, privateKey);
+  const payload = jwt.verify(header, privateKey)
   const {
     gameId,
     userId
@@ -42,25 +43,33 @@ module.exports.handler = async (event) => {
   if (!documentGetResult.Item) {
     throw createError('Game ID Entered Does Not Exist');
   }
-  const gridSize = documentGetResult.Item.gridSize;
-  const shipSize = documentGetResult.Item.ships[0].shipSize;
-  if (isOutOfBound(body.coordinates, gridSize)) throw createError("Out of Bounds");
-  if (isGreaterThanShipSize(body.coordinates, shipSize)) throw createError("Ship is too big");
-  const isVertical = isVerticalCheck(body.coordinates);
-  const varyingCord = getVaryingCord(body.coordinates, isVertical);
-  const constCoord = isVertical ? body.coordinates[0].x : body.coordinates[0].y;
+
+  const gridSize = documentGetResult.Item.gridSize
+
+  const shipSize = documentGetResult.Item.ships[0].shipSize  
+  if (isOutOfBound(body.coordinates, gridSize)) throw createError("Out of Bounds")
+  if (isGreaterThanShipSize(body.coordinates, shipSize)) throw createError("Ship is too big")
+  const isVertical = isVerticalCheck(body.coordinates)
+  const varyingCord = getVaryingCord(body.coordinates, isVertical)
+  const constCoord = isVertical ? body.coordinates[0].x : body.coordinates[0].y 
   const shipName = body.shipName;
   const userShip = {
     shipName: shipName,
     isVertical: isVertical,
     constCoord: constCoord,
     varyingCord,
-  };
-  const updatedPlayer = players.map(player => {
-    if (player.userId === userId) {
-      player.ship = userShip
+  }
+
+  console.log(userShip, '🩸')
+
+  const updatedPlayer = documentGetResult.Item.players.map(player => {
+    if(player.userId === userId) {
+         player.ship = userShip
     }
-  });
+    return player
+})
+  console.log(updatedPlayer, '🩸🩸🩸')
+
   const players = await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Key: {

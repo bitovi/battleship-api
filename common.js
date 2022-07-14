@@ -7,15 +7,16 @@ const { DynamoDB } = require("@aws-sdk/client-dynamodb");
 const { AWS_REGION, AWS_DYNAMO_ENDPOINT } = process.env;
 
 function isVerticalCheck(coords) {
-    return coords[0].y === coords[1].y;
+    return coords[0].x === coords[1].x;
 }
 
 function isOutOfBound(coords, gridSize) {
-    return coords[0].x <= 0 || coords[1].x >= gridSize || coords[0].y <= 0 || coords[1].y >= gridSize
+    console.log(gridSize)
+    return coords[0].x < 0 || coords[1].x > gridSize || coords[0].y < 0 || coords[1].y > gridSize
 }
 
 function isGreaterThanShipSize(coords, shipSize) {
-    return Math.abs(coords[0].x-coords[1].x) !==  shipSize|| Math.abs(coords[0].y-coords[1].y) !==  shipSize
+    return Math.abs(coords[0].x-coords[1].x) >  shipSize|| Math.abs(coords[0].y-coords[1].y) >  shipSize
 }
 
 function getVaryingCord(coords, isVertical){
@@ -59,17 +60,19 @@ const configuration = AWS_DYNAMO_ENDPOINT ?
 
 
 
-module.exports.dynamo = DynamoDBDocument.from(new DynamoDB({
+const dynamo = DynamoDBDocument.from(new DynamoDB({
     region: AWS_REGION,
     ...configuration,
 }));
 
-module.exports.privateKey = "fish";
+const privateKey = "fish"
 module.exports = {
     isVerticalCheck,
     isOutOfBound,
     isGreaterThanShipSize,
     isEliminated,
     getVaryingCord,
-    checkAttack
+    checkAttack,
+    privateKey,
+    dynamo
 }
