@@ -10,13 +10,13 @@ function generateJWTToken(payload = {}) {
 
 function createUser({ gameId, name }) {
   const userId = createUuid();
-  let specialName = name ?? casual.name().toUpperCase();
+  let specialName = name ?? casual.name.toUpperCase();
   const userName =
-    casual.name().toUpperCase() +
+    casual.name.toUpperCase() +
     ' ' +
     specialName +
     ' ' +
-    casual.name().toUpperCase();
+    casual.name.toUpperCase();
   let jwtToken = generateJWTToken({ gameId, userName, userId });
   return jwtToken;
 }
