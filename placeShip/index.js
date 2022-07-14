@@ -3,7 +3,7 @@
 const BattleShip = require('../types/ships/BattleShip');
 const Game = require('../types/Game');
 const Player = require('../types/Player');
-const { getTokenForGame } = require('../token');
+const { getIdForUser } = require('../token');
 const { getDefaultRoleAssumerWithWebIdentity } = require("@aws-sdk/client-sts");
 const { defaultProvider } = require("@aws-sdk/credential-provider-node");
 const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
@@ -46,9 +46,20 @@ module.exports.handler = async (event) => {
   // }
 
   const parsedBody = JSON.parse(event.body);
-  const { userId, gameId, shipName } = parsedBody;
+  const { gameId, shipName } = parsedBody;
+  let userId;
+  try {
+    userId = getIdForUser(event)
+    parsedBody.userId = userId;
+  }
+  catch(e) {
+    return {
+      statusCode: e.statusCode,
+      body: e.message
+    };
+  }
 
-  ["userId", "gameId", "shipName", "coordinates"].forEach((reqField) => {
+  ["gameId", "shipName", "coordinates"].forEach((reqField) => {
     if(!parsedBody[reqField]) {
       return {
         statusCode: 400,
@@ -73,89 +84,16 @@ module.exports.handler = async (event) => {
 
   const game = Game.deserialize(documentGetResult.Item);
 
-  const ship = new BattleShip({userId})
-  const playerShips = game.players[userId].ships
-  if(playerShips.length) {
+  try {
+    game.validatePlayer(userId);
+    game.placeShip(parsedBody)
+  }
+  catch (e) {
     return {
-      statusCode: 400,
-      body: JSON.stringify({message: "Can't place additional ships. Player already has a ship."}, null, 2),
+      statusCode: e.statusCode,
+      body: JSON.stringify(e.message, null, 2)
     };
   }
-
-  playerShips.push(ship)
-
-  if(parsedBody.coordinates.length !== 2) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({message: "Expected exactly 2 sets of coordinates"}, null, 2),
-    };
-  }
-
-  const coordinates = {
-    x: {},
-    y: {}
-  }
-  for(let coordinateSet of parsedBody.coordinates) {
-    if(coordinateSet.x === undefined || typeof coordinateSet.x !== 'number') {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({message: "Expected x coordinate"}, null, 2),
-      };
-    }
-    if(coordinateSet.y === undefined || typeof coordinateSet.y !== 'number') {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({message: "Expected y coordinate"}, null, 2),
-      };
-    }
-    coordinates['x'][coordinateSet.x] = true
-    coordinates['y'][coordinateSet.y] = true
-  }
-  
-  // find if ship is oriented correctly and correct length
-  const xCount = Object.keys(coordinates['x']).length;
-  const yCount = Object.keys(coordinates['y']).length;
-
-  const gridCellsToUpdate = [];
-  if ((xCount === 1 && yCount !== 1) || (xCount !== 1 && yCount === 1)) {
-    // calculate midpoints 
-    const sideWithLength = xCount > yCount ? 'x' : 'y';
-    const sideWithoutLength = sideWithLength === 'x' ? 'y' : 'x';
-    const staticCoordinate = Object.keys(coordinates[sideWithoutLength])[0];
-    const endpointsArray = Object.keys(coordinates[sideWithLength]).sort();
-    for (let i = endpointsArray[0]; i <= endpointsArray[1]; i++) {
-      gridCellsToUpdate.push({
-        [sideWithoutLength]: staticCoordinate,
-        [sideWithLength]: i
-      })
-    }
-  }
-  else {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({message: "Expected ship to be horizontal or vertical"}, null, 2),
-    };
-  }
-
-  if (gridCellsToUpdate.length !== BattleShip.size) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({message: `Expected ship to have size ${BattleShip.size}`}, null, 2),
-    };
-  } 
-
-  // update grid
-  gridCellsToUpdate.forEach(({x, y}) => {
-    const cell = game.grid[x]?.[y];
-    if (!cell) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({message: 'Ship is out of bounds'}, null, 2),
-      };
-    }
-    // put the shipId in the game cell
-    cell.shipIds.push(ship.id);
-  })
 
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
