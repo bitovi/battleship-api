@@ -17,11 +17,15 @@
   },
   "devDependencies": {
     "serverless": "^3.20.0",
-    "serverless-dynamodb-local": "^0.2.40",
+    "serverless-dynamodb-local": "0.2.30",
     "serverless-offline": "^8.8.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "remove:dynamo": "sls dynamodb remove",
+    "init:dynamo": "sls dynamodb install --localPath ./bin",
+    "start": "serverless offline start",
+    "start:dynamo": "sls dynamodb start"
   },
   "repository": {
     "type": "git",
