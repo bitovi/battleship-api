@@ -2,8 +2,6 @@
 
 const { GAMES_TABLE_NAME } = process.env;
 const createError = require("http-errors");
-const { generateTokenFromPayload } = require('../helpers/webtoken');
-const { createPlayer } = require("../helpers/players");
 const { dynamoClient } = require("../helpers/dynamodb");
 
 module.exports.handler = async (event) => {
@@ -34,6 +32,8 @@ module.exports.handler = async (event) => {
     throw createError(404, 'game not found');
   }
 
+  console.log(JSON.stringify(documentGetResult.Item));
+
   // Check that the player is in this game
   const player = documentGetResult.Item.players.find((player) => {
     return player.token === event.headers.authorization;
@@ -60,6 +60,7 @@ module.exports.handler = async (event) => {
   // Update the game state to make it as started
   documentGetResult.Item.gameStarted = true;
 
+  console.log(JSON.stringify(documentGetResult.Item));
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Item: documentGetResult.Item

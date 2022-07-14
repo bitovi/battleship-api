@@ -2,8 +2,6 @@
 
 const { GAMES_TABLE_NAME } = process.env;
 const createError = require("http-errors");
-const { generateTokenFromPayload } = require('../helpers/webtoken');
-const { createPlayer } = require("../helpers/players");
 const { dynamoClient } = require("../helpers/dynamodb");
 
 module.exports.handler = async (event) => {
