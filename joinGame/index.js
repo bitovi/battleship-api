@@ -50,7 +50,7 @@ module.exports.handler = async (event) => {
   const result = {
     userId: name,
     gridSize: documentGetResult.Item.gridSize,
-    token: creatorUserToken
+    token: userToken
   }
 
   return {
