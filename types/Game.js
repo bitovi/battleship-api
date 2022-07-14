@@ -7,6 +7,7 @@ module.exports = class Game {
     this.gridSize = payload.gridSize;
     this.grid = payload.grid ?? this.createGrid(payload.gridSize ?? 10);
     this.players = payload.players ?? {};
+    // todo ships here as object
     this.owner = payload.owner;
   }
 

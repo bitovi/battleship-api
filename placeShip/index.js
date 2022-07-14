@@ -125,8 +125,8 @@ module.exports.handler = async (event) => {
     const endpointsArray = Object.keys(coordinates[sideWithLength]).sort();
     for (let i = endpointsArray[0]; i <= endpointsArray[1]; i++) {
       gridCellsToUpdate.push({
-        sideWithoutLength: staticCoordinate,
-        sideWithLength: i
+        [sideWithoutLength]: staticCoordinate,
+        [sideWithLength]: i
       })
     }
   }
@@ -145,24 +145,24 @@ module.exports.handler = async (event) => {
   } 
 
   // update grid
-  gridCellsToUpdate.forEach(cell => {
-
+  gridCellsToUpdate.forEach(({x, y}) => {
+    const cell = game.grid[x]?.[y];
+    if (!cell) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({message: 'Ship is out of bounds'}, null, 2),
+      };
+    }
+    // put the shipId in the game cell
+    cell.shipIds.push(ship.id);
   })
-
 
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Item: game.serialize(),
   });
 
-  const returnValue = {
-    userId: player.id,
-    gridSize: game.gridSize,
-    token: getTokenForGame(player.id)
-  } 
-
   return {
-    statusCode: 200,
-    body: JSON.stringify(returnValue, null, 2),
+    statusCode: 204
   };
 };
