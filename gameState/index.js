@@ -32,6 +32,12 @@ module.exports.handler = async (event) => {
     return createError(404, 'game not found');
   }
 
+  if (documentGetResult.Item.players.length > 0) {
+    documentGetResult.Item.players.forEach((player) => {
+      delete player.token;
+    });
+  }
+
   return {
     statusCode: 200,
     body: JSON.stringify(
