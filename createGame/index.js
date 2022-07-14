@@ -33,13 +33,14 @@ const dynamoClient = DynamoDBDocument.from(
 module.exports.handler = async (event) => {
   const body = JSON.parse(event.body);
   const userName = body.userName ?? casual.name;
+  const userId = createUuid();
   const gridSize = body.gridSize ?? 10;
-  const players = [userName];
+  const players = [userId];
 
   const id = createUuid();
   const gameShips = [
     {
-      name: 'Arizona Battleship',
+      name: 'Standard Battleship',
       size: 4,
     },
   ];
@@ -51,6 +52,7 @@ module.exports.handler = async (event) => {
         id,
         ships: gameShips,
         gridSize,
+        coordinates: [],
         players,
       },
     });
@@ -64,7 +66,7 @@ module.exports.handler = async (event) => {
       {
         gameId: id,
         ships: gameShips,
-        token: createUser({ gameId: id, name: userName }),
+        token: createUser({ gameId: id, name: userName, userId}),
       },
       null,
       2

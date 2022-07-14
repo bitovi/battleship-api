@@ -1,4 +1,4 @@
-const { JWT_SECRET_KEY } = process.env;
+const JWT_SECRET_KEY = 'fish';
 const casual = require('casual');
 const { v4: createUuid } = require('uuid');
 const jwt = require('jsonwebtoken');

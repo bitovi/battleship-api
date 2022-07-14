@@ -37,10 +37,10 @@ module.exports.handler = async (event) => {
   const body = JSON.parse(event.body);
 
   const { gameId: id } = body;
-  const { userName } = body;
+  const { name: userName } = body;
 
   if (!id) {
-    return error(404, 'Game not found.');
+    return error(400, 'Game is required.');
   }
 
   if (!userName) {
@@ -55,6 +55,7 @@ module.exports.handler = async (event) => {
   });
 
   if (!game.Item) {
+    return error(404, 'Game not found.');
   }
 
   const userId = createUuid();
