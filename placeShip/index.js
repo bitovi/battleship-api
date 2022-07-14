@@ -27,6 +27,7 @@ module.exports.handler = async (event) => {
       })
     }
   }
+  
   const payload = jwt.verify(header, privateKey)
   const {
     gameId,
@@ -48,7 +49,7 @@ module.exports.handler = async (event) => {
   const shipSize = documentGetResult.Item.ships[0].shipSize;
   let errorMessage;
   if (isOutOfBound(body.coordinates, gridSize)) errorMessage = "ship out of bounds"; //out-of-bounds
-  if (isGreaterThanShipSize(body.coordinates, shipSize)) errorMessage = "ship not placed correctly, cannot place diagonoly"; //not-placed-correctly
+  if (isGreaterThanShipSize(body.coordinates, shipSize)) errorMessage = "ship not placed correctly, cannot place diagonally"; //not-placed-correctly
   const isVertical = isVerticalCheck(body.coordinates);
   const varyingCord = getVaryingCord(body.coordinates, isVertical);
   const constCoord = isVertical ? body.coordinates[0].x : body.coordinates[0].y;
