@@ -72,7 +72,6 @@ module.exports.handler = async (event) => {
   });
 
   const returnValue = {
-    userId: player.id,
     gridSize: game.gridSize,
     token: getTokenForGame(player.id)
   } 
