@@ -4,10 +4,10 @@ const { getDefaultRoleAssumerWithWebIdentity } = require('@aws-sdk/client-sts');
 const { defaultProvider } = require('@aws-sdk/credential-provider-node');
 const { DynamoDBDocument } = require('@aws-sdk/lib-dynamodb');
 const { DynamoDB } = require('@aws-sdk/client-dynamodb');
-const casual = require('casual');
-const { v4: createUuid } = require('uuid');
 const { AWS_REGION, GAMES_TABLE_NAME, AWS_DYNAMO_ENDPOINT } = process.env;
+const { v4: createUuid } = require('uuid');
 const createUser = require('../jwt/generateToken');
+const casual = require('casual');
 
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
@@ -31,35 +31,11 @@ const dynamoClient = DynamoDBDocument.from(
 );
 
 module.exports.handler = async (event) => {
-  const userName = JSON.parse(event.body).userName ?? casual.name;
-
-  const id = createUuid();
-  const gameShips = [
-    {
-      name: 'Arizona Battleship',
-      size: 4,
-    },
-  ];
-
-  try {
-    await dynamoClient.put({
-      TableName: GAMES_TABLE_NAME,
-      Item: {
-        id,
-        ships: gameShips,
-      },
-    });
-  } catch (err) {
-    throw new Error(err.message);
-  }
-
   return {
     statusCode: 200,
     body: JSON.stringify(
       {
-        gameId: id,
-        ships: gameShips,
-        token: createUser({ gameId: id, name: userName }),
+        route: 'startGame',
       },
       null,
       2
