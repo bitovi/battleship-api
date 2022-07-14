@@ -1,10 +1,10 @@
 const { v4: createUuid } = require('uuid');
-
+const BattleShip = require('../types/ships/BattleShip');
 module.exports = class Player {
   constructor(payload = {}) {
     this.id = payload.id ?? createUuid();
     this.name = payload.name;
-    this.ships = [] ?? payload.ships;
+    this.ships = payload.ships ?? [];
   }
 
   serialize() {
@@ -16,6 +16,7 @@ module.exports = class Player {
   }
 
   static deserialize(payload) {
-    return new Player(payload);
+    payload.ships = payload.ships.map(BattleShip.deserialize)
+    return new Player(payload);;
   }
 }

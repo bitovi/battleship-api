@@ -23,7 +23,7 @@ module.exports = class BattleShip {
     }
   }
 
-  deserialize(payload) {
+  static deserialize(payload) {
     return new BattleShip(payload);
   }
 }
