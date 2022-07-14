@@ -31,7 +31,10 @@ const dynamoClient = DynamoDBDocument.from(
 );
 
 module.exports.handler = async (event) => {
-  const userName = JSON.parse(event.body).userName ?? casual.name;
+  const body = JSON.parse(event.body);
+  const userName = body.userName ?? casual.name;
+  const gridSize = body.gridSize ?? 10;
+  const players = [userName];
 
   const id = createUuid();
   const gameShips = [
@@ -47,6 +50,8 @@ module.exports.handler = async (event) => {
       Item: {
         id,
         ships: gameShips,
+        gridSize,
+        players,
       },
     });
   } catch (err) {
