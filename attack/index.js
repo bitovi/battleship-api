@@ -23,7 +23,7 @@ module.exports.handler = async (event) => {
         return createError(400, 'missing name and gameId, body not valid JSON');
     }
 
-    const { gameId, userId, coordinates } = event.body;
+    const { gameId, coordinates } = event.body;
 
     // Get the game state from the database (hopefully)
     const documentGetResult = await dynamoClient.get({
@@ -38,15 +38,6 @@ module.exports.handler = async (event) => {
         return createError(404, 'game not found');
     }
 
-    // Check that the player is in this game
-    const player = documentGetResult.Item.players.find((player) => {
-        return player.token === event.headers.authorization;
-    });
-
-    if (!player) {
-        return createError(400, "you're not part of this game");
-    }
-
     // Check that the game has started
     if (!documentGetResult.Item.gameStarted) {
         return createError(400, 'cannot attack until the game starts');
@@ -56,6 +47,20 @@ module.exports.handler = async (event) => {
     if (documentGetResult.Item.gameOver) {
         return createError(400, 'cannot attack once the game is over');
     }
+
+    // Check that the player is in this game
+    const player = documentGetResult.Item.players.find((player) => {
+        return player.token === event.headers.authorization;
+    });
+
+    if (!player) {
+        return createError(400, "you're not part of this game");
+    }
+
+    if (player.playerHp === 0) {
+        return createError(400, "you cannot attack, you are dead");
+    }
+
 
     const attackRateLimit = 5 * 1000;
     if (player.lastAttackTime && (new Date() - new Date(player.lastAttackTime)) < attackRateLimit) {
