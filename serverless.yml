@@ -41,7 +41,7 @@ functions:
     handler: createGame/index.handler
     events:
       - httpApi:
-          path: /game
+          path: /createGame
           method: post
 resources:
   Resources:
