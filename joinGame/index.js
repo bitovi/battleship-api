@@ -1,16 +1,12 @@
 "use strict";
 
-
-const { v4: createUuid } = require("uuid");
 const { GAMES_TABLE_NAME } = process.env;
 const createError = require("http-errors");
 const { generateTokenFromPayload } = require('../helpers/webtoken');
-const { dynamoClient } = require("../helpers/dynamodb");
 const { createPlayer } = require("../helpers/players");
+const { dynamoClient } = require("../helpers/dynamodb");
 
 module.exports.handler = async (event) => {
-  const id = createUuid();
-
   if (!event.body) {
     throw createError(400, 'missing name and gameId');
   }
@@ -21,42 +17,39 @@ module.exports.handler = async (event) => {
     throw createError(400, 'missing name and gameId, body not valid JSON');
   }
 
-  const gridSize = event.body.gridSize || 10;
-  const creatorUserName = event.body.name || 'host';
-  const creatorUserToken = generateTokenFromPayload({ gameId: id, name: creatorUserName });
+  const { name, gameId } = event.body;
 
-  await dynamoClient.put({
-    TableName: GAMES_TABLE_NAME,
-    Item: {
-      id,
-      ships: [
-        {
-          name: "battleship",
-          size: 4
-        }
-      ],
-      gridSize,
-      players: [
-        createPlayer(true, creatorUserName, creatorUserToken)
-      ],
-      grid: {}
-    }
-  });
+  if (!name) {
+    throw createError(400, 'name is required');
+  }
 
+  if (!gameId) {
+    throw createError(400, 'gameId is required');
+  }
+
+  const userToken = generateTokenFromPayload({ gameId: gameId, name: name })
   const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
     Key: {
-      id
+      id: gameId
     }
   })
 
   if (!documentGetResult.Item) {
-    throw createError(500);
+    throw createError(404, 'game not found');
   }
 
+  // Add this new player to the game
+  documentGetResult.Item.players.push(createPlayer(false, name, userToken));
+
+  await dynamoClient.put({
+    TableName: GAMES_TABLE_NAME,
+    Item: documentGetResult.Item
+  });
+
   const result = {
-    gameId: id,
-    ships: documentGetResult.Item.ships,
+    userId: name,
+    gridSize: documentGetResult.Item.gridSize,
     token: creatorUserToken
   }
 

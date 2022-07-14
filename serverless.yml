@@ -46,6 +46,12 @@ functions:
       - httpApi:
           path: /placeShip
           method: post          
+  joinGame:
+    handler: joinGame/index.handler
+    events:
+      - httpApi:
+          path: /joinGame
+          method: post            
 resources:
   Resources:
     GamesTable:
