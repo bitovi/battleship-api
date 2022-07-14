@@ -5,28 +5,27 @@ const { defaultProvider } = require("@aws-sdk/credential-provider-node");
 const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDB } = require("@aws-sdk/client-dynamodb");
 const { v4: createUuid } = require("uuid");
-const { AWS_REGION, GAMES_TABLE_NAME } = process.env;
+const { AWS_REGION, GAMES_TABLE_NAME, AWS_DYNAMO_ENDPOINT } = process.env;
 const createError = require("http-errors");
 const { generateTokenFromPayload } = require('../helpers/webtoken')
 
 const credentialProvider = defaultProvider({
   roleAssumerWithWebIdentity: getDefaultRoleAssumerWithWebIdentity,
 });
-
-
-const dynamoOptions = {
-  region: AWS_REGION,
-  credentialDefaultProvider: credentialProvider
-}
-
-if (process.env.IS_OFFLINE) {
-  dynamoOptions.endpoint = 'http://localhost:8000';
-  dynamoOptions.credentials = {
-    accessKeyId: 'accessKeyId',
-    secretAccessKey: 'secretAccessKey'
+const configuration = AWS_DYNAMO_ENDPOINT ?
+  {
+    credentials: {
+      accessKeyId: 'accessKeyId',
+      secretAccessKey: 'secretAccessKey'
+    },
+    endpoint: AWS_DYNAMO_ENDPOINT
+  } : {
+    credentialDefaultProvider: credentialProvider
   }
-}
-const dynamoClient = DynamoDBDocument.from(new DynamoDB(dynamoOptions));
+const dynamoClient = DynamoDBDocument.from(new DynamoDB({
+  region: AWS_REGION,
+  ...configuration,
+}));
 
 module.exports.handler = async (event) => {
   const id = createUuid();
