@@ -61,7 +61,7 @@ module.exports.handler = async (event) => {
     throw createError(500);
   }
 
-  documentGetResult.Item.token = jwt.sign({ gameId: id, userId }, privateKey, {});
+  documentGetResult.Item.token = jwt.sign({ gameId: id, userId, isAdmin: true }, privateKey, {});
 
   return {
     statusCode: 200,
