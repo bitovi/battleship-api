@@ -1,9 +1,10 @@
 const { v4: createUuid } = require('uuid');
 const GridCell = require('./GridCell');
-
+const Player = require('./Player');
 module.exports = class Game {
   constructor(payload = {}) {
     this.id = payload.id ?? createUuid();
+    this.gridSize = payload.gridSize;
     this.grid = payload.grid ?? this.createGrid(payload.gridSize ?? 10);
     this.players = payload.players ?? [];
     this.owner = payload.owner;
@@ -16,6 +17,7 @@ module.exports = class Game {
   serialize() {
     return {
       id: this.id,
+      gridSize: this.gridSize,
       grid: this.grid.map(row => row.map(cell => cell.serialize())),
       players: this.players.map(p => p.serialize()),
       owner: this.owner.serialize()
@@ -25,8 +27,8 @@ module.exports = class Game {
   static deserialize(payload) {
     const game = new Game(payload) 
 
-    game.grid = payload.grid.map(row => row.map(cell => new GridCell(cell)))
-
+    game.grid = payload.grid.map(row => row.map(cell => new GridCell(cell)));
+    game.owner = Player.deserialize(payload.owner);
     return game;
   }
 };
