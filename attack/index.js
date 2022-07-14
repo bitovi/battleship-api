@@ -50,6 +50,8 @@ module.exports.handler = async (event) => {
       id
     }
   });
+  if (documentGetResult.Item.status === 'ended') throw createError('Game has ended');
+
   console.log(documentGetResult)
   let currentPlayer;
   const getCurrentPlayer = () =>{
