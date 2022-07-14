@@ -1,0 +1,48 @@
+Index: getState/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\"use strict\";\n\nconst { v4: createUuid } = require(\"uuid\");\nconst { GAMES_TABLE_NAME } = process.env;\nconst createError = require(\"http-errors\");\nconst jwt = require(\"jsonwebtoken\");\nconst dynamoClient = require(\"../common.js\").dynamo;\nconst privateKey = require(\"../common.js\").privateKey;\n\nmodule.exports.handler = async (event) => {\n    const id = createUuid();\n    let body;\n    try {\n        body = JSON.parse(event.body);\n    } catch (err) {\n        return {\n            statusCode: 400,\n            body: JSON.stringify({\n                error: \"Bad Request\"\n            })\n        }\n    }\n\n    const id = body.gameId\n\n    const documentGetResult = await dynamoClient.get({\n        TableName: GAMES_TABLE_NAME,\n        Key: {\n            id\n        }\n    });\n\n    if (!documentGetResult.Item) {\n        throw createError(500);\n    }\n\n\n    return {\n        statusCode: 200,\n        body: JSON.stringify(\n            documentGetResult.Item,\n            null,\n            2\n        )\n    };\n};\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/getState/index.js b/getState/index.js
+--- a/getState/index.js	(revision a23194ecee8ded80198e12f24672de671144721f)
++++ b/getState/index.js	(date 1657826355556)
+@@ -1,6 +1,5 @@
+ "use strict";
+ 
+-const { v4: createUuid } = require("uuid");
+ const { GAMES_TABLE_NAME } = process.env;
+ const createError = require("http-errors");
+ const jwt = require("jsonwebtoken");
+@@ -8,7 +7,6 @@
+ const privateKey = require("../common.js").privateKey;
+ 
+ module.exports.handler = async (event) => {
+-    const id = createUuid();
+     let body;
+     try {
+         body = JSON.parse(event.body);
+@@ -21,7 +19,7 @@
+         }
+     }
+ 
+-    const id = body.gameId
++    const id = body.id
+ 
+     const documentGetResult = await dynamoClient.get({
+         TableName: GAMES_TABLE_NAME,
+@@ -29,12 +27,12 @@
+             id
+         }
+     });
++    console.log(documentGetResult)
+ 
+     if (!documentGetResult.Item) {
+         throw createError(500);
+     }
+ 
+-
+     return {
+         statusCode: 200,
+         body: JSON.stringify(
