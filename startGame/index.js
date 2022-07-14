@@ -40,6 +40,7 @@ module.exports.handler = async (event) => {
   if (!documentGetResult.Item) {
     throw createError('Game ID Entered Does Not Exist');
   }
+  const activePlayers = documentGetResult.Item.players.length
 
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
@@ -47,7 +48,8 @@ module.exports.handler = async (event) => {
       id: gameId
     },
     Item: {
-      ...documentGetResult.Item, 
+      ...documentGetResult.Item,
+      activePlayers: activePlayers,
       status: 'started',
     }
   });

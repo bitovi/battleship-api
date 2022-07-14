@@ -34,8 +34,6 @@ module.exports.handler = async (event) => {
   }
   const payload = jwt.verify(header, privateKey);
 
-  if(!isAdmin) errorMessage = "Cannot start game, only user that created game has permission";
-
   const {
     userId,
     gameId
