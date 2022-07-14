@@ -22,6 +22,9 @@ function getVaryingCord(coords, isVertical) {
     const s = isVertical ? 'y' : 'x';
     return coords[0][s] < coords[1][s] ? coords[0][s] : coords[1][s];
 }
+function sumArray(array) {
+    return array.reduce((a, b) => a + b, 0)
+}
 
 function checkAttack(ship, place, shipSize) {
     const x = place[0];
@@ -72,6 +75,7 @@ module.exports = {
     isEliminated,
     getVaryingCord,
     checkAttack,
+    sumArray,
     privateKey,
     dynamo
 }
