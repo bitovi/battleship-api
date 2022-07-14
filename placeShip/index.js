@@ -26,7 +26,7 @@ module.exports.handler = async (event) => {
   }
 
   const userId = jwt.verify(header.token, 'fish')
-
+  if (!userId) throw createError("Need a valid token")
   const gameId = body.gameId ?? '';  
   //validate gameId
   const documentGetResult = await dynamoClient.get({
@@ -49,11 +49,7 @@ module.exports.handler = async (event) => {
   const shipName = body.shipName;
   let coordinates = []
 
-  const updatedPlayer = players.map(player => {
-    if(player.userId === userId) {
-        //update the 
-    }
-}) 
+
 
 
   const userShip = {
@@ -61,9 +57,15 @@ module.exports.handler = async (event) => {
     isVertical: isVertical,
     constCoord: constCoord,
     coordinates: coordinates,
-
   }
-  const currentPlayer  =
+
+  const updatedPlayer = players.map(player => {
+    if(player.userId === userId) {
+      player = {
+      }
+    }
+  })
+
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Key: {
