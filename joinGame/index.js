@@ -83,14 +83,40 @@ module.exports.handler = async (event) => {
   });
 
   if (!game.Item) {
-    throw createError(500);
+    return {
+      statusCode: 404,
+      body: JSON.stringify(
+        {
+          message: 'Game not found',
+        },
+        null,
+        2
+      ),
+    };
+  }
+
+  const userId = createUuid();
+  const players = [...game.Item.players, userId];
+
+  try {
+    await dynamoClient.put({
+      TableName: GAMES_TABLE_NAME,
+      Item: {
+        id,
+        players,
+      },
+    });
+  } catch (err) {
+    throw new Error(err.message);
   }
 
   return {
     statusCode: 200,
     body: JSON.stringify(
       {
-        route: 'joinGame',
+        userId,
+        gridSize: game.Item.gridSize,
+        token: createUser({ gameId: id, name: userName }),
       },
       null,
       2
