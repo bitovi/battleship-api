@@ -18,7 +18,7 @@ async function getSecret(secretArn) {
         SecretId: secretArn
     });
     if (!secretValue.SecretString) {
-        throw createError(500);
+        throw new Error("SecretString doesn't exist!");
     }
     secretsCache[secretArn] = secretValue.SecretString;
 
@@ -34,7 +34,7 @@ async function getSecretFromEnvironment(name) {
     if (process.env[name]) {
         return process.env[name];
     }
-    throw createError(500);
+    throw new Error("env var doesn't exist!");
 }
 
 module.exports = {
