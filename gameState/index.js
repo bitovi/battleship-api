@@ -5,17 +5,7 @@ const { createError } = require("../helpers/error");
 const { dynamoClient } = require("../helpers/dynamodb");
 
 module.exports.handler = async (event) => {
-  if (!event.body) {
-    return createError(400, 'missing body');
-  }
-
-  try {
-    event.body = JSON.parse(event.body);
-  } catch (err) {
-    return createError(400, 'missing gameId, body not valid JSON');
-  }
-
-  const { gameId } = event.body;
+  const { gameId } = event.queryStringParameters
 
   if (!gameId) {
     return createError(400, 'gameId is required');
