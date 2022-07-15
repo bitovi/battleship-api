@@ -96,19 +96,14 @@ To learn more about the capabilities of `serverless-offline`, please refer to it
 
 There is a Dockerfile in the repo that will provide a consistent development environment.
 
-Run this command to build the docker image (this only needs to be done the first time or when you add new npm dependencies):
+Run this command to build and run the app using Docker:
 
 ```
-docker build -t battleship-api:dev .
+docker compose up --build
 ```
 
-Run this command to run the built image using local source code:
+To stop everything, run:
+
 ```
-docker run \
-  -it \
-  -p 3000:3000 \
-  -p 9229:9229 \
-  -v $(pwd):/usr/src/app \
-  -v /usr/src/app/node_modules \
-  battleship-api:dev
+docker compose down -v
 ```
