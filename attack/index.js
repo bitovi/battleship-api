@@ -102,6 +102,7 @@ module.exports.handler = async (event) => {
       },
       Item: {
         ...documentGetResult.Item,
+        activePlayers: noOfActivePlayers,
         players,
         status,
         winner
