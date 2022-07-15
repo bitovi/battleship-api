@@ -53,7 +53,13 @@ functions:
     events:
       - httpApi:
           path: /costTesting2
-          method: get          
+          method: get     
+  costTesting3:
+    handler: costTesting3/index.handler
+    events:
+      - httpApi:
+          path: /costTesting3
+          method: get                   
   placeShip:
     handler: placeShip/index.handler
     events:

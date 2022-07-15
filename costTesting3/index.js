@@ -12,6 +12,8 @@ function generateRandomName(length) {
 }
 
 module.exports.handler = async (event) => {
+  const memoryInitial = process.memoryUsage().heapUsed / 1024 / 1024;
+
   const id = createUuid();
 
   if (!event.queryStringParameters) {
@@ -47,21 +49,21 @@ module.exports.handler = async (event) => {
         isVertical: Math.round(Math.random()) === 1,
         constCoord: Math.floor(Math.random() * gridSize),
         varyingCord: Math.floor(Math.random() * gridSize),
-        eliminated: Array.from({length: averageShipSize}).fill(0)
+        eliminated: Array.from({ length: averageShipSize }).fill(0)
       });
     }
 
     const player = {
-        userId: createUuid(),
-        name: playerName,
-        isAdmin: false,
-        isEliminated: false,
-        ships: playerShips
+      userId: createUuid(),
+      name: playerName,
+      isAdmin: false,
+      isEliminated: false,
+      ships: playerShips
     };
     players[i] = player
   }
 
-  const status = ['pending','started','ended'];
+  const status = ['pending', 'started', 'ended'];
 
   const gameState = {
     id,
@@ -81,9 +83,11 @@ module.exports.handler = async (event) => {
     });
   }
 
+  const memoryFinal = process.memoryUsage().heapUsed / 1024 / 1024;
   const gameStateMemory = memorySizeOf(gameState);
   const gameStateString = JSON.stringify(gameState);
   const gameStateBytes = Buffer.byteLength(gameStateString, 'utf-8');
+  const memoryDiff = memoryFinal - memoryInitial;
 
   const results = {
     gameId: id,
@@ -96,7 +100,7 @@ module.exports.handler = async (event) => {
     shipsPerPlayer,
     gameStateMemory,
     maxShipParts,
-    csv: `test3,${gridSize},${playerCount},${density},${gameStateBytes},${gameStateMemory}`
+    csv: `test3,${gridSize},${playerCount},${density},${gameStateBytes},${gameStateMemory},${memoryDiff}`
   }
 
   return {
