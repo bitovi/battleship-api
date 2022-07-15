@@ -107,3 +107,17 @@ To stop everything, run:
 ```
 docker compose down -v
 ```
+
+### Running Tests
+
+In order to run the tests you'll first need to start up docker in another process:
+
+```
+docker compose up --build
+```
+
+Then in another terminal run the tests:
+
+```
+npm t
+```
