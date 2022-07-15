@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Start docker
-        run: docker compose up -f docker-compose.yml -f docker-compose-ci.yml --build -d
+        run: docker compose -f docker-compose.yml -f docker-compose-ci.yml up --build -d
       
       - name: buffering time for docker to start up
         uses: jakejarvis/wait-action@master
