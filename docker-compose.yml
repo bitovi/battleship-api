@@ -9,6 +9,6 @@ services:
       - 3000:3000
       - 8000:8000
       - 9229:9229
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+    # volumes:
+    #   - .:/usr/src/app
+    #   - /usr/src/app/node_modules
