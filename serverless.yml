@@ -42,6 +42,12 @@ functions:
       - httpApi:
           path: /createGame
           method: post
+  costTesting:
+    handler: costTesting/index.handler
+    events:
+      - httpApi:
+          path: /costTesting
+          method: get
   placeShip:
     handler: placeShip/index.handler
     events:

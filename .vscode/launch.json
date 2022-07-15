@@ -1,6 +1,19 @@
 {
     "configurations": [
         {
+            "address": "localhost",
+            "localRoot": "${workspaceFolder}",
+            "name": "Docker Debugger",
+            "port": 9229,
+            "remoteRoot": "/usr/src/app",
+            "request": "attach",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        
+        {
             "type": "node",
             "request": "launch",
             "name": "Debug Serverless Offline",
