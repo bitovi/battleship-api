@@ -74,7 +74,7 @@ module.exports.handler = async (event) => {
     gameOver: false
   }
 
-  if (doDynamoWrite !== 'true') {
+  if (doDynamoWrite === 'true') {
     await dynamoClient.put({
       TableName: GAMES_TABLE_NAME,
       Item: gameState
