@@ -17,4 +17,4 @@ COPY serverless.yml ./serverless.yml
 RUN npm install serverless-dynamodb-local@0.2.30
 RUN npx sls dynamodb install
 
-CMD npm run debug
+CMD npm run debug:docker

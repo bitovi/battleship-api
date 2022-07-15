@@ -26,6 +26,7 @@ module.exports.handler = async (event) => {
 
   const maxShipParts = shipsPerPlayer * averageShipSize;
 
+  const gameGrid = [];
   const players = [];
   const ships = [];
 
@@ -37,12 +38,23 @@ module.exports.handler = async (event) => {
     }
   }
 
+  // For every grid square, generate the 2d array
+  for (let x = 0; x < gridSize; x++) {
+
+    if (!gameGrid[x]) {
+      gameGrid[x] = [];
+    }
+
+    for (let y = 0; y < gridSize; y++) {
+      gameGrid[x][y] = { ships: [] };
+    }
+  }
+
   // Create a list of random players for the game state
   for (let i = 0; i < playerCount; i++) {
     const playerName = generateRandomName();
     const player = createPlayer(false, playerName, generateTokenFromPayload({ gameId: id, name: playerName }))
 
-    player.userGrid = {};
     let shipParts = 0;
 
     // randomly place ship parts in the grid for this player
@@ -68,6 +80,7 @@ module.exports.handler = async (event) => {
   const gameState = {
     id,
     ships: ships,
+    gameGrid,
     gridSize,
     players: players,
     gameStarted: false,
@@ -93,8 +106,8 @@ module.exports.handler = async (event) => {
     doDynamoWrite,
     averageShipSize,
     shipsPerPlayer,
-    maxShipParts,    
-    csv: `test1,${gridSize},${playerCount},${density},${gameStateBytes}`
+    maxShipParts,
+    csv: `test2,${gridSize},${playerCount},${density},${gameStateBytes}`
   }
 
   return {
