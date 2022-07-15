@@ -3,15 +3,17 @@
 const { GAMES_TABLE_NAME } = process.env;
 const { createError } = require("../helpers/error");
 const { dynamoClient } = require("../helpers/dynamodb");
-const { validateUserToken } = require('../helpers/webtoken');
+const { validateUserToken, getJWTKeyPair } = require('../helpers/webtoken');
 
 module.exports.handler = async (event) => {
     if (!event.headers.authorization) {
         return createError(401, 'missing auth token');
     }
 
+    const { publicKey } = await getJWTKeyPair();
+
     // Check that the user has a valid jwt
-    validateUserToken(event.headers.authorization);
+    validateUserToken(event.headers.authorization, publicKey);
 
     if (!event.body) {
         return createError(400, 'missing name and gameId');

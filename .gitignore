@@ -5,3 +5,10 @@ jspm_packages
 # Serverless directories
 .serverless
 .dynamodb
+
+# Keys
+RS512.key
+RS512.key.pub
+
+# Mac
+.DS_Store

@@ -1,0 +1,45 @@
+const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
+const { credentialProvider } = require("./aws-credentials");
+const { AWS_REGION } = process.env;
+const { createError } = require("../helpers/error");
+
+const secretsCache = {};
+
+const secretsManager = new SecretsManager({
+    region: AWS_REGION,
+    credentialDefaultProvider: credentialProvider
+});
+
+async function getSecret(secretArn) {
+    if (secretsCache[secretArn]) {
+        return secretsCache[secretArn];
+    }
+    const secretValue = await secretsManager.getSecretValue({
+        SecretId: secretArn
+    });
+    if (!secretValue.SecretString) {
+        throw createError(500);
+    }
+    secretsCache[secretArn] = secretValue.SecretString;
+
+    return secretValue.SecretString;
+}
+
+async function getSecretFromEnvironment(name) {
+    const arnName = `${name}_ARN`
+    if (process.env[arnName]) {
+        const secret = await getSecret(arnName);
+        return secret;
+    }
+    if (process.env[name]) {
+        return process.env[name];
+    }
+    if (!secretValue.SecretString) {
+        throw createError(500);
+    }
+}
+
+module.exports = {
+    getSecret,
+    getSecretFromEnvironment
+}

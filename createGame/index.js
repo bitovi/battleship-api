@@ -3,7 +3,7 @@
 const { v4: createUuid } = require("uuid");
 const { GAMES_TABLE_NAME } = process.env;
 const { createError } = require("../helpers/error");
-const { generateTokenFromPayload } = require('../helpers/webtoken');
+const { generateTokenFromPayload, getJWTKeyPair} = require('../helpers/webtoken');
 const { dynamoClient } = require("../helpers/dynamodb");
 const { createPlayer } = require("../helpers/players");
 
@@ -20,9 +20,11 @@ module.exports.handler = async (event) => {
     return createError(400, 'missing name and gameId, body not valid JSON');
   }
 
+  const { privateKey } = await getJWTKeyPair();
+
   const gridSize = event.body.gridSize || 10;
   const creatorUserName = event.body.name || 'host';
-  const creatorUserToken = generateTokenFromPayload({ gameId: id, name: creatorUserName });
+  const creatorUserToken = generateTokenFromPayload({ gameId: id, name: creatorUserName }, privateKey);
 
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
