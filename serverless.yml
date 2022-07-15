@@ -40,7 +40,7 @@ functions:
     handler: createGame/index.handler
     events:
       - httpApi:
-          path: /game
+          path: /createGame
           method: post
   placeShip:
     handler: placeShip/index.handler
@@ -71,7 +71,7 @@ functions:
     events:
       - httpApi:
           path: /gameState
-          method: post    
+          method: get
 resources:
   Resources:
     GamesTable:
