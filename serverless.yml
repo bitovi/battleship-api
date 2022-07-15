@@ -1,6 +1,5 @@
 service: battleship-api-${env:TEAM_BRANCH_NAME, 'dev'}
 frameworkVersion: '3'
-useDotenv: true
 provider:
   name: aws
   runtime: nodejs14.x
@@ -9,18 +8,11 @@ provider:
     - Effect: Allow
       Action:
         - dynamodb:*
+        - secretsmanager:GetSecretValue
       Resource: '*'
   environment:
     GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
-    AWS_DYNAMO_ENDPOINT: ${self:custom.env.${opt:stage, 'dev'}.dynamoEndpoint}
 custom:
-  serverless-offline:
-    host: 0.0.0.0
-  env:
-    dev:
-      dynamoEndpoint: 'http://localhost:8000'
-    prod:
-      dynamoEndpoint: ''
   dynamodb:
   # If you only want to use DynamoDB Local in some stages, declare them here
     stages:
@@ -86,5 +78,6 @@ resources:
           - AttributeName: id
             KeyType: HASH
 plugins:
+  - serverless-dotenv-plugin
   - serverless-offline
   - serverless-dynamodb-local

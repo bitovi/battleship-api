@@ -1,22 +1,29 @@
 const jwt = require('jsonwebtoken')
+const { getSecretFromEnvironment } = require("../helpers/secrets-manager");
 const { createError } = require("../helpers/error");
-const secret = 'Token';
 
-function generateTokenFromPayload(payload) {
-  const token = jwt.sign(payload, secret)
+function generateTokenFromPayload(payload, privateKey) {
+  const token = jwt.sign(payload, privateKey)
   return token
 }
 
-function validateUserToken(token) {
+function validateUserToken(token, publicKey) {
   try {
-    return jwt.verify(token, secret);
+    return jwt.verify(token, publicKey);
   } catch (err) {
     return createError(403, 'Unable to validate token');
   }
 }
 
+async function getJWTKeyPair() {
+  const rawKeyPair = await getSecretFromEnvironment('JWT_KEY_PAIR');
+  const keyPar = JSON.parse(rawKeyPair);
+  return keyPar;
+}
+
 
 module.exports = {
   validateUserToken,
-  generateTokenFromPayload
+  generateTokenFromPayload,
+  getJWTKeyPair
 }

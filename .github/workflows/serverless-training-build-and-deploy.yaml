@@ -26,8 +26,9 @@ jobs:
     - name: serverless deploy
       uses: serverless/github-action@v3.1
       with:
-        args: deploy --stage=prod
+        args: deploy --stage=production
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         TEAM_BRANCH_NAME: ${{ steps.vars.outputs.team_name }}
+        NODE_ENV: production
