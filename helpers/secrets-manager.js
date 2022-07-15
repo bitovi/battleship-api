@@ -14,6 +14,9 @@ async function getSecret(secretArn) {
     if (secretsCache[secretArn]) {
         return secretsCache[secretArn];
     }
+    console.log("JWT_KEY_PAIR_ARN", {
+        SecretId: secretArn
+    });
     const secretValue = await secretsManager.getSecretValue({
         SecretId: secretArn
     });

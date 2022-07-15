@@ -8,7 +8,6 @@ const { dynamoClient } = require("../helpers/dynamodb");
 const { createPlayer } = require("../helpers/players");
 
 module.exports.handler = async (event) => {
-  console.log("JWT_KEY_PAIR_ARN", process.env.JWT_KEY_PAIR_ARN);
   const id = createUuid();
 
   if (!event.body) {
