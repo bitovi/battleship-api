@@ -40,7 +40,8 @@ module.exports.handler = async (event) => {
       ],
       grid: {},
       gameStarted: false,
-      gameOver: false
+      gameOver: false,
+      connections: []
     }
   });
 
