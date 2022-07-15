@@ -1,6 +1,8 @@
+# The test.yml github action will use this file to override the volumes list with one harmless mapping.
+# See docker-compose.yml for default volumes list.
 version: '3.5'
 
 services:
   app:
     volumes:
-      - /usr/src/app
+      - /usr/src/app 
