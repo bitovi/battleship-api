@@ -1,7 +1,8 @@
 function createError(statusCode, err) {
     return {
         statusCode,
-        body: JSON.stringify({ status: statusCode, details: err })
+        body: JSON.stringify({ status: statusCode, details: err }),
+        error: true
     }
 }
 
