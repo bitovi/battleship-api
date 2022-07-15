@@ -19,7 +19,7 @@ module.exports.handler = async (event) => {
     return createError(400, 'missing queryStringParameters');
   }
 
-  const { gridSize, playerCount, density } = event.queryStringParameters;
+  const { gridSize, playerCount, density, doDynamoWrite } = event.queryStringParameters;
 
   const averageShipSize = 4;
   const shipsPerPlayer = Math.round((gridSize / averageShipSize) * (density / 100));
@@ -74,23 +74,30 @@ module.exports.handler = async (event) => {
     gameOver: false
   }
 
-  await dynamoClient.put({
-    TableName: GAMES_TABLE_NAME,
-    Item: gameState
-  });
+  if (doDynamoWrite !== 'true') {
+    await dynamoClient.put({
+      TableName: GAMES_TABLE_NAME,
+      Item: gameState
+    });
+  }
 
   const gameStateString = JSON.stringify(gameState);
+  const gameStateBytes = Buffer.byteLength(gameStateString, 'utf-8');
+
+  const results = {
+    gameId: id,
+    gameStateBytes,
+    gridSize,
+    playerCount,
+    density,
+    doDynamoWrite,
+    csv: `${gridSize},${playerCount},${density},${gameStateBytes}`
+  }
 
   return {
     statusCode: 200,
     body: JSON.stringify(
-      {
-        gameId: id,
-        gameStateBytes: Buffer.byteLength(gameStateString, 'utf-8'),
-        gridSize,
-        playerCount,
-        density
-      },
+      results,
       null,
       2
     )
