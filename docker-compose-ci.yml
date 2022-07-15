@@ -3,3 +3,4 @@ version: '3.5'
 services:
   app:
     volumes:
+      - /usr/src/app
