@@ -2,9 +2,7 @@ service: battleship-api-${env:TEAM_BRANCH_NAME, 'dev'}
 frameworkVersion: '3'
 useDotenv: true
 provider: 
-  name: aws
-  logs:
-    websocket: true 
+  name: aws 
   websocketsApiName: websockets-api
   websocketsApiRouteSelectionExpression: $request.body.action 
   runtime: nodejs14.x
