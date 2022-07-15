@@ -107,6 +107,7 @@ Run this command to run the built image using local source code:
 docker run \
   -it \
   -p 3000:3000 \
+  -p 9229:9229 \
   -v $(pwd):/usr/src/app \
   -v /usr/src/app/node_modules \
   battleship-api:dev

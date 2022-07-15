@@ -25,7 +25,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "debug": "export SLS_DEBUG=* && node --inspect ./node_modules/.bin/serverless offline start"
+    "debug": "export SLS_DEBUG=* && node --inspect=0.0.0.0:9229 ./node_modules/.bin/serverless offline start"
   },
   "repository": {
     "type": "git",
