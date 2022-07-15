@@ -72,6 +72,19 @@ functions:
       - httpApi:
           path: /gameState
           method: get
+  connectionHandler:
+    handler: handler.connectionHandler
+    events:
+      - websocket:
+          route: $connect
+      - websocket:
+          route: $disconnect
+  helloHandler:
+    handler: handler.helloHandler
+    events:
+      - websocket:
+          route: hello
+          routeResponseSelectionExpression: $default
 resources:
   Resources:
     GamesTable:
