@@ -6,6 +6,14 @@ const { DynamoDBDocument } = require("@aws-sdk/lib-dynamodb");
 const { DynamoDB } = require("@aws-sdk/client-dynamodb");
 const { AWS_REGION, AWS_DYNAMO_ENDPOINT } = process.env;
 
+function sumArray(array) {
+    return array.reduce((a, b) => a + b, 0)
+}
+
+function getArrayOfZerosFromNumber(number) {
+    return Array.from({length: number}).fill(0);
+}
+
 function isVerticalCheck(coords) {
     return coords[0].x === coords[1].x;
 }
@@ -22,15 +30,12 @@ function getVaryingCord(coords, isVertical) {
     const s = isVertical ? 'y' : 'x';
     return coords[0][s] < coords[1][s] ? coords[0][s] : coords[1][s];
 }
-function sumArray(array) {
-    return array.reduce((a, b) => a + b, 0)
-}
 
 function checkAttack(ship, place, shipSize) {
     const x = place[0];
     const y = place[1];
-    const staticCord = ship.isVertical ? y : x;
-    const cord = ship.isVertical ? x : y;
+    const staticCord = ship.isVertical ? x : y;
+    const cord = ship.isVertical ? y : x;
     if (staticCord !== ship.staticCord) return false;
     return shipSize > Math.abs(cord - ship.varyingCord);
 }
@@ -38,8 +43,8 @@ function checkAttack(ship, place, shipSize) {
 function isEliminated(ship, place, shipSize) {
     const x = place[0];
     const y = place[1];
-    const staticCord = ship.isVertical ? y : x;
-    const cord = ship.isVertical ? x : y;
+    const staticCord = ship.isVertical ? x : y;
+    const cord = ship.isVertical ? y : x;
     if (staticCord !== ship.staticCord) return false;
     const sub = Math.abs(cord - ship.varyingCord);
     if (sub > shipSize) return false;
@@ -76,6 +81,7 @@ module.exports = {
     getVaryingCord,
     checkAttack,
     sumArray,
+    getArrayOfZerosFromNumber,
     privateKey,
     dynamo
 }

@@ -40,12 +40,13 @@ module.exports.handler = async (event) => {
       gridSize: gridSize,
       ships: ships,
       status: 'pending',
+      winner: false,
       players: [
         {
           userId,
           name: hostName,
           isAdmin: true,
-          isEliminated: false
+          isEliminated: false,
         }
       ]
     }

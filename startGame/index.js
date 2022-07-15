@@ -11,7 +11,7 @@ module.exports.handler = async (event) => {
   let header;
   try {
     body = JSON.parse(event.body);
-    header = event.headers.authorization;
+    header = event.headers;
   } catch (err) {
     return {
       statusCode: 400,
@@ -21,7 +21,7 @@ module.exports.handler = async (event) => {
     }
   }
 
-  const payload = jwt.verify(header, privateKey);
+  const payload = jwt.verify(header.authorization, privateKey);
   const {
     gameId,
     isAdmin

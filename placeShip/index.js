@@ -9,7 +9,8 @@ const {
   isVerticalCheck,
   getVaryingCord,
   isOutOfBound,
-  isGreaterThanShipSize
+  isGreaterThanShipSize,
+  getArrayOfZerosFromNumber
 } = require("../common.js");
 
 module.exports.handler = async (event) => {
@@ -17,7 +18,7 @@ module.exports.handler = async (event) => {
   let header;
   try {
     body = JSON.parse(event.body);
-    header = event.headers.authorization;
+    header = event.headers;
   } catch (err) {
     console.log(err)
     return {
@@ -28,7 +29,7 @@ module.exports.handler = async (event) => {
     }
   }
   
-  const payload = jwt.verify(header, privateKey)
+  const payload = jwt.verify(header.authorization, privateKey)
   const {
     gameId,
     userId
@@ -44,29 +45,29 @@ module.exports.handler = async (event) => {
     throw createError('Game ID Entered Does Not Exist');
   }
 
-  const gridSize = documentGetResult.Item.gridSize;
-
-  const shipSize = documentGetResult.Item.ships[0].shipSize;
+  const Game = documentGetResult.Item;
+  
+  const gridSize = Game.gridSize;
+  
+  const shipSize = Game.ships[0].shipSize;
+  const shipName = body.shipName;
   let errorMessage;
   if (isOutOfBound(body.coordinates, gridSize)) errorMessage = "ship out of bounds"; //out-of-bounds
   if (isGreaterThanShipSize(body.coordinates, shipSize)) errorMessage = "ship not placed correctly, cannot place diagonally"; //not-placed-correctly
+  
   const isVertical = isVerticalCheck(body.coordinates);
   const varyingCord = getVaryingCord(body.coordinates, isVertical);
+  
   const constCoord = isVertical ? body.coordinates[0].x : body.coordinates[0].y;
-  const shipName = body.shipName;
-  const eliminated = [];
-  for (let index = 0; index < shipSize; index++) {
-    eliminated.push(0);
-  }
   const userShip = {
     shipName: shipName,
     isVertical,
     constCoord,
     varyingCord,
-    eliminated,
+    eliminated: getArrayOfZerosFromNumber(shipSize)
   };
 
-  const updatedPlayer = documentGetResult.Item.players.map(player => {
+  const updatedPlayer = Game.players.map(player => {
     if (player.userId === userId) {
       player.ship = userShip;
     }
@@ -79,7 +80,7 @@ module.exports.handler = async (event) => {
       id: gameId
     },
     Item: {
-      ...documentGetResult.Item,
+      ...Game,
       players: updatedPlayer
     }
   });

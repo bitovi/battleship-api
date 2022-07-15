@@ -2,9 +2,7 @@
 
 const { GAMES_TABLE_NAME } = process.env;
 const createError = require("http-errors");
-const jwt = require("jsonwebtoken");
 const dynamoClient = require("../common.js").dynamo;
-const privateKey = require("../common.js").privateKey;
 
 module.exports.handler = async (event) => {
     let body;
