@@ -6,7 +6,6 @@ describe('createGame', () => {
     const result = await createGame({body});
 
     const resultBody = JSON.parse(result.body);
-    console.log({ resultBody }); // TOOD: remove
 
     expect(result.statusCode).toBe(200);
 
