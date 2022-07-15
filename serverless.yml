@@ -79,6 +79,7 @@ functions:
     events:
       - websocket:
           route: $connect
+          routeResponseSelectionExpression: $default
   OnDisconnect:
     handler: OnDisconnect/index.handler
     events:

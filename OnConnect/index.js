@@ -1,20 +1,27 @@
- const { validateUserToken } = require('../helpers/webtoken');
+const { dynamoClient } = require("../helpers/dynamodb"); 
+const { GAMES_TABLE_NAME } = process.env; 
+const { validateUserToken } = require('../helpers/webtoken');
 
 module.exports.handler = async (event) => {
-  const connectionId = event.requestContext.connectionId;
-    
-  
-  const parsedToken = validateUserToken(event.headers['Sec-WebSocket-Protocol']);
-  console.log('connectionId from onConnect', connectionId);
-  console.log('parsedToken from onConnect', JSON.stringify(parsedToken, null, '\t'));  
-    
+  const connectionId = event.requestContext.connectionId;  
 
- /*  const documentGetResult = await dynamoClient.get({
+  console.log('connectionId from onConnect', connectionId); 
+  const { gameId } = event.queryStringParameters; 
+
+  
+  console.log('gameId from onConnect', gameId); 
+  
+  try {
+      const documentGetResult = await dynamoClient.get({
     TableName: GAMES_TABLE_NAME,
     Key: {
       id: gameId
     }
-  })
+      })
+    
+      
+   console.log('documentGetResult: ', documentGetResult); 
+  
 
   if (!documentGetResult.Item) {
     return createError(404, 'game not found');
@@ -25,14 +32,29 @@ module.exports.handler = async (event) => {
   }
 
   // Add this new player to the game
-  documentGetResult.Item.players.push(createPlayer(false, name, userToken));
+  if(!documentGetResult.Item.connections){
+    documentGetResult.Item.connections = []
+  }  
+  documentGetResult.Item.connections.push(connectionId);
 
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Item: documentGetResult.Item
   });
- */
+
+  
+   console.log('documentGetResult: ', documentGetResult); 
+  
   return { 
+    body: JSON.stringify(documentGetResult.Item, null, '\t'),
     statusCode: 200,
   };
+    
+  } catch (error) {
+    console.log(error)
+  }
+
+
+
+
 };
