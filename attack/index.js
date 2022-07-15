@@ -76,7 +76,7 @@ module.exports.handler = async (event) => {
         if(isAttack && !isElim){
           hit = true;
           noOfHits += 1;
-          const attackedIndex = Math.abs(userShip.cord - (userShip.isVertical ? y : x))
+          const attackedIndex = Math.abs(userShip.varyingCord - (userShip.isVertical ? y : x))
           const eliminatedArray = userShip.eliminated;
           eliminatedArray[attackedIndex] = 1;
           userShip.eliminated = eliminatedArray;

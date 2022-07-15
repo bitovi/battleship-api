@@ -36,7 +36,7 @@ function checkAttack(ship, place, shipSize) {
     const y = place[1];
     const staticCord = ship.isVertical ? x : y;
     const cord = ship.isVertical ? y : x;
-    if (staticCord !== ship.staticCord) return false;
+    if (staticCord !== ship.constCoord) return false;
     return shipSize > Math.abs(cord - ship.varyingCord);
 }
 
@@ -45,7 +45,7 @@ function isEliminated(ship, place, shipSize) {
     const y = place[1];
     const staticCord = ship.isVertical ? x : y;
     const cord = ship.isVertical ? y : x;
-    if (staticCord !== ship.staticCord) return false;
+    if (staticCord !== ship.constCoord) return false;
     const sub = Math.abs(cord - ship.varyingCord);
     if (sub > shipSize) return false;
     return ship.eliminated[sub] === 1;
