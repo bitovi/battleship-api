@@ -4,6 +4,7 @@ const { v4: createUuid } = require("uuid");
 const { GAMES_TABLE_NAME } = process.env;
 const { createError } = require("../helpers/error");
 const { generateTokenFromPayload } = require('../helpers/webtoken');
+const { memorySizeOf } = require('../helpers/memory');
 const { dynamoClient } = require("../helpers/dynamodb");
 const { createPlayer } = require("../helpers/players");
 
@@ -13,6 +14,7 @@ function generateRandomName(length) {
 }
 
 module.exports.handler = async (event) => {
+  const memoryInitial = process.memoryUsage().heapUsed / 1024 / 1024;
   const id = createUuid();
 
   if (!event.queryStringParameters) {
@@ -81,9 +83,11 @@ module.exports.handler = async (event) => {
     });
   }
 
+  const memoryFinal = process.memoryUsage().heapUsed / 1024 / 1024;
+  const gameStateMemory = memorySizeOf(gameState);
   const gameStateString = JSON.stringify(gameState);
   const gameStateBytes = Buffer.byteLength(gameStateString, 'utf-8');
-
+  const memoryDiff = memoryFinal - memoryInitial;
   const results = {
     gameId: id,
     gameStateBytes,
@@ -92,9 +96,12 @@ module.exports.handler = async (event) => {
     density,
     doDynamoWrite,
     averageShipSize,
+    gameStateMemory,
     shipsPerPlayer,
     maxShipParts,
-    csv: `test1,${gridSize},${playerCount},${density},${gameStateBytes}`
+    memoryInitial,
+    memoryFinal,
+    csv: `test1,${gridSize},${playerCount},${density},${gameStateBytes},${gameStateMemory},${memoryDiff}`
   }
 
   return {

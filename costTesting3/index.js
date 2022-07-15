@@ -4,6 +4,7 @@ const { v4: createUuid } = require("uuid");
 const { GAMES_TABLE_NAME } = process.env;
 const { createError } = require("../helpers/error");
 const { dynamoClient } = require("../helpers/dynamodb");
+const { memorySizeOf } = require('../helpers/memory');
 
 function generateRandomName(length) {
   let r = (Math.random() + 1).toString(36).substring(length || 7);
@@ -80,6 +81,7 @@ module.exports.handler = async (event) => {
     });
   }
 
+  const gameStateMemory = memorySizeOf(gameState);
   const gameStateString = JSON.stringify(gameState);
   const gameStateBytes = Buffer.byteLength(gameStateString, 'utf-8');
 
@@ -92,8 +94,9 @@ module.exports.handler = async (event) => {
     doDynamoWrite,
     averageShipSize,
     shipsPerPlayer,
+    gameStateMemory,
     maxShipParts,
-    csv: `test1,${gridSize},${playerCount},${density},${gameStateBytes}`
+    csv: `test3,${gridSize},${playerCount},${density},${gameStateBytes},${gameStateMemory}`
   }
 
   return {
