@@ -1,4 +1,4 @@
-module.exports.onDisconnect = async (event) => {
+module.exports.handler = async (event) => {
   const connectionId = event.requestContext.connectionId; 
 
   return {

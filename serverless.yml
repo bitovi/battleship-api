@@ -77,12 +77,12 @@ functions:
           path: /gameState
           method: get 
   OnConnectHandler:
-    handler: handler.onConnect
+    handler: onConnect/index.handler
     events:
       - websocket:
           route: $connect
   OnDisconnect:
-    handler: src/index/aws.onDisconnect
+    handler: onDisconnect/index.handler
     events:
       - websocket:
           route: $disconnect 

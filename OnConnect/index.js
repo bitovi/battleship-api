@@ -1,5 +1,5 @@
  
-module.exports.onConnect = async (event) => {
+module.exports.handler = async (event) => {
   const connectionId = event.requestContext.connectionId;  
   console.log('connectionId', connectionId);
   return {
