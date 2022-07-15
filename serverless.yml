@@ -12,15 +12,7 @@ provider:
       Resource: '*'
   environment:
     GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
-    AWS_DYNAMO_ENDPOINT: ${self:custom.env.${opt:stage, 'dev'}.dynamoEndpoint}
 custom:
-  serverless-offline:
-    host: 0.0.0.0
-  env:
-    dev:
-      dynamoEndpoint: 'http://localhost:8000'
-    prod:
-      dynamoEndpoint: ''
   dynamodb:
   # If you only want to use DynamoDB Local in some stages, declare them here
     stages:

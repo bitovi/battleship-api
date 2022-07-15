@@ -34,9 +34,7 @@ async function getSecretFromEnvironment(name) {
     if (process.env[name]) {
         return process.env[name];
     }
-    if (!secretValue.SecretString) {
-        throw createError(500);
-    }
+    throw createError(500);
 }
 
 module.exports = {
