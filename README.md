@@ -92,3 +92,22 @@ _Note: this should automatically startup local DynamoDB, but seems to be inconsi
 
 To learn more about the capabilities of `serverless-offline`, please refer to its [GitHub repository](https://github.com/dherault/serverless-offline).
 
+### Usage with Docker
+
+There is a Dockerfile in the repo that will provide a consistent development environment.
+
+Run this command to build the docker image (this only needs to be done the first time or when you add new npm dependencies):
+
+```
+docker build -t battleship-api:dev .
+```
+
+Run this command to run the built image using local source code:
+```
+docker run \
+  -it \
+  -p 3000:3000 \
+  -v $(pwd):/usr/src/app \
+  -v /usr/src/app/node_modules \
+  battleship-api:dev
+```
