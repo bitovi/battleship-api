@@ -37,18 +37,24 @@ module.exports.handler = async (event) => {
   for (let i = 0; i < playerCount; i++) {
     const playerName = generateRandomName();
     // const player = createPlayer(false, playerName, generateTokenFromPayload({ gameId: id, name: playerName }))
+    const playerShips = []
+
+    for (let j = 0; j < shipsPerPlayer; j++) {
+      playerShips.push({
+        shipName: generateRandomName(),
+        isVertical: Math.round(Math.random()) === 1,
+        constCoord: Math.floor(Math.random() * gridSize),
+        varyingCord: Math.floor(Math.random() * gridSize),
+        eliminated: Array.from({length: averageShipSize}).fill(0)
+      });
+    }
+
     const player = {
         userId: createUuid(),
         name: playerName,
         isAdmin: false,
         isEliminated: false,
-        ships: {
-            shipName: generateRandomName(),
-            isVertical: Math.round(Math.random()) === 1,
-            constCoord: Math.floor(Math.random() * gridSize),
-            varyingCord: Math.floor(Math.random() * gridSize),
-            eliminated: Array.from({length: averageShipSize}).fill(0)
-          }
+        ships: playerShips
     };
     players[i] = player
   }
