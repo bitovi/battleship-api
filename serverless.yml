@@ -36,6 +36,10 @@ custom:
     # Uncomment only if you already have a DynamoDB running locally
     # noStart: true   
 functions:
+  logState:
+    handler: logState/index.handler
+    events:
+      - stream: arn:aws:dynamodb:us-east-1:924063360281:table/battleship-api-event-sourcing-games/stream/2022-07-15T17:34:48.505
   createGame:
     handler: createGame/index.handler
     events:
