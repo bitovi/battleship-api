@@ -1,7 +1,6 @@
 "use strict";
 
 const { GAMES_TABLE_NAME } = process.env;
-const createError = require("http-errors");
 const dynamoClient = require("../common.js").dynamo;
 
 module.exports.handler = async (event) => {
@@ -24,10 +23,14 @@ module.exports.handler = async (event) => {
             id
         }
     });
-    console.log(documentGetResult)
 
     if (!documentGetResult.Item) {
-        throw createError(500);
+        return {
+            statusCode: 400,
+            body: JSON.stringify({
+                error: "Item not found"
+            })
+        }
     }
 
     return {

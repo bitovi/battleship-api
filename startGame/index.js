@@ -42,12 +42,12 @@ module.exports.handler = async (event) => {
     throw createError('Game ID Entered Does Not Exist');
   }
   
-  if (documentGetResult.Item.status != 'pending') errorMessage = `game cannot be started since game has ${documentGetResult.Item.status}`;
+  if (documentGetResult.Item.status != 'pending') throw createError(`game cannot be started since game has ${documentGetResult.Item.status}`);
   const activePlayers = documentGetResult.Item.players.length;
   documentGetResult.Item.players.map(player => {
-    if (!player.ship) errorMessage = `${player.name}'s ship has not been placed `; 
+    if (!player.ship) throw createError(`${player.name}'s ship has not been placed `);
   })
-  if (activePlayers <= 1) errorMessage = 'There must be more than one player present to start a game';
+  if (activePlayers <= 1) throw createError("There must be more than one player present to start a game");
   await dynamoClient.put({
     TableName: GAMES_TABLE_NAME,
     Key: {

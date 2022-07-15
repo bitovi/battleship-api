@@ -60,7 +60,7 @@ module.exports.handler = async (event) => {
   });
 
   if (!documentGetResult.Item) {
-    throw createError(500);
+    throw createError(400,'Invalid result');
   }
 
   documentGetResult.Item.token = jwt.sign({ gameId: id, userId, isAdmin: true }, privateKey, {});

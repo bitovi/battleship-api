@@ -70,7 +70,7 @@ module.exports.handler = async (event) => {
 
     const updtedPlayers = Game.players.map(player => {
       if(player.userId !== userId && !player.isEliminated){
-        const userShip = player.userShip
+        const userShip = player.ship
         let isAttack = checkAttack(userShip,[x,y], shipSize)
         let isElim = isEliminated(userShip,[x,y],shipSize)
         if(isAttack && !isElim){
