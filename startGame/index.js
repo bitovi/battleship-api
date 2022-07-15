@@ -27,9 +27,8 @@ module.exports.handler = async (event) => {
     isAdmin
   } = payload;
 
-  let errorMessage; 
-  if(!isAdmin) errorMessage = "Cannot start game, only user that created game has permission";
-  if(body.gameId !== gameId) errorMessage = "Invalid GameId provided for host";
+  if(!isAdmin) throw createError("Cannot start game, only user that created game has permission");
+  if(body.gameId !== gameId) throw createError("Invalid GameId provided for host");
 
   //validate gameId
   const documentGetResult = await dynamoClient.get({
@@ -60,17 +59,7 @@ module.exports.handler = async (event) => {
     }
   });
 
-  const responseBody = errorMessage ?
-    {
-      statusCode: 400,
-      body: JSON.stringify(
-        {
-          message: errorMessage
-        },
-        null,
-        2
-      )
-    } : {
+    return {
       statusCode: 200,
       body: JSON.stringify(
         {
@@ -80,6 +69,4 @@ module.exports.handler = async (event) => {
         2
       )
     };
-
-  return responseBody;
 };

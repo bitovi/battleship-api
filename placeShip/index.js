@@ -49,11 +49,10 @@ module.exports.handler = async (event) => {
   
   const gridSize = Game.gridSize;
   
-  const shipSize = Game.ships[0].shipSize;
+  const shipSize = Game.ships[0].size;
   const shipName = body.shipName;
-  let errorMessage;
-  if (isOutOfBound(body.coordinates, gridSize)) errorMessage = "ship out of bounds"; //out-of-bounds
-  if (isGreaterThanShipSize(body.coordinates, shipSize)) errorMessage = "ship not placed correctly, cannot place diagonally"; //not-placed-correctly
+  if (isOutOfBound(body.coordinates, gridSize)) throw createError("ship out of bounds"); //out-of-bounds
+  if (isGreaterThanShipSize(body.coordinates, shipSize)) throw createError("ship not placed correctly, cannot place diagonally"); //not-placed-correctly
   
   const isVertical = isVerticalCheck(body.coordinates);
   const varyingCord = getVaryingCord(body.coordinates, isVertical);
@@ -85,19 +84,14 @@ module.exports.handler = async (event) => {
     }
   });
 
-  const responseBody = errorMessage ?
-    {
-      statusCode: 400,
-      body: JSON.stringify(
-        {
-          message: errorMessage
-        },
-        null,
-        2
-      )
-    } : {
-      statusCode: 204
-    };
-
-  return responseBody;
+  return {
+    statusCode: 200,
+    body: JSON.stringify(
+      {
+        message: "Ship successfully placed"
+      },
+      null,
+      2
+    )
+  };
 };
