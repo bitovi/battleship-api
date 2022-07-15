@@ -24,6 +24,10 @@ module.exports.handler = async (event) => {
   const averageShipSize = 4;
   const shipsPerPlayer = Math.round((gridSize / averageShipSize) * (density / 100));
 
+  if (shipsPerPlayer === 0) {
+    throw new Error("Bad ShipsPerPlayer");
+  }
+
   const maxShipParts = shipsPerPlayer * averageShipSize;
 
   const gameGrid = [];
@@ -46,14 +50,14 @@ module.exports.handler = async (event) => {
     }
 
     for (let y = 0; y < gridSize; y++) {
-      gameGrid[x][y] = { ships: [] };
+      gameGrid[x][y] = [];
     }
   }
 
   // Create a list of random players for the game state
-  for (let i = 0; i < playerCount; i++) {
+  for (let playerId = 0; playerId < playerCount; playerId++) {
     const playerName = generateRandomName();
-    const player = createPlayer(false, playerName, generateTokenFromPayload({ gameId: id, name: playerName }))
+    const player = createPlayer(false, playerName, null)
 
     let shipParts = 0;
 
@@ -62,19 +66,22 @@ module.exports.handler = async (event) => {
       const placeX = Math.floor(Math.random() * gridSize);
       const placeY = Math.floor(Math.random() * gridSize);
 
-      const placeCoord = placeX + "_" + placeY;
-
-      if (!player.userGrid[placeCoord]) {
-        player.userGrid[placeCoord] = {
-          "hit": (placeX % 2) ? true : false,
-          "shipId": Math.floor((shipParts / averageShipSize))
+      const gameGridLocationArray = gameGrid[placeX][placeY];
+      let hasShipAtPosition = false;
+      gameGridLocationArray.forEach((gridLocation, index) => {
+        if (gridLocation.playerId === playerId) {
+          hasShipAtPosition = true;
         }
+      });
 
+      if (!hasShipAtPosition) {
+        gameGridLocationArray.push({ playerId: playerId, hit: (placeX % 2) ? true : false });
+        gameGrid[placeX][placeY] = gameGridLocationArray;
         shipParts++;
       }
     }
 
-    players[i] = player
+    players[playerId] = player
   }
 
   const gameState = {
@@ -96,6 +103,8 @@ module.exports.handler = async (event) => {
 
   const gameStateString = JSON.stringify(gameState);
   const gameStateBytes = Buffer.byteLength(gameStateString, 'utf-8');
+
+  console.log(gameStateString);
 
   const results = {
     gameId: id,
