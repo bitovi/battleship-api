@@ -48,6 +48,12 @@ functions:
       - httpApi:
           path: /costTesting
           method: get
+  costTesting2:
+    handler: costTesting2/index.handler
+    events:
+      - httpApi:
+          path: /costTesting2
+          method: get          
   placeShip:
     handler: placeShip/index.handler
     events:

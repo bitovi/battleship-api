@@ -26,6 +26,7 @@
   },
   "scripts": {
     "lint": "eslint .",
+    "debug:docker": "export SLS_DEBUG=* SLS_INTERACTIVE_SETUP_ENABLE=1 && nodemon --exec node --inspect=0.0.0.0:9229 ./node_modules/.bin/serverless offline start",
     "debug": "export SLS_DEBUG=* && node --inspect=0.0.0.0:9229 ./node_modules/.bin/serverless offline start"
   },
   "repository": {
