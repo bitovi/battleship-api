@@ -8,6 +8,7 @@ provider:
     - Effect: Allow
       Action:
         - dynamodb:*
+        - secretsmanager:GetSecretValue
       Resource: '*'
   environment:
     GAMES_TABLE_NAME: ${self:resources.Resources.GamesTable.Properties.TableName}
