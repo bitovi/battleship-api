@@ -1,7 +1,6 @@
 const { SecretsManager } = require("@aws-sdk/client-secrets-manager");
 const { credentialProvider } = require("./aws-credentials");
 const { AWS_REGION } = process.env;
-const { createError } = require("../helpers/error");
 
 const secretsCache = {};
 
@@ -14,9 +13,6 @@ async function getSecret(secretArn) {
     if (secretsCache[secretArn]) {
         return secretsCache[secretArn];
     }
-    console.log("JWT_KEY_PAIR_ARN", {
-        SecretId: secretArn
-    });
     const secretValue = await secretsManager.getSecretValue({
         SecretId: secretArn
     });
@@ -29,9 +25,9 @@ async function getSecret(secretArn) {
 }
 
 async function getSecretFromEnvironment(name) {
-    const arnName = `${name}_ARN`
+    const arnName = `${name}_ID`
     if (process.env[arnName]) {
-        const secret = await getSecret(arnName);
+        const secret = await getSecret(process.env[arnName]);
         return secret;
     }
     if (process.env[name]) {
