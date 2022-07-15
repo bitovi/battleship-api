@@ -4,8 +4,12 @@ const { GAMES_TABLE_NAME } = process.env;
 const { createError } = require("../helpers/error");
 const { dynamoClient } = require("../helpers/dynamodb");
 
-module.exports.handler = async (event) => {
-  const { gameId } = event.queryStringParameters
+module.exports.handler = async (event) => { 
+  const connectionId = event.requestContext.connectionId; 
+
+  console.log('connectionId from gameState: ', connectionId) 
+ 
+  const /* { */ gameId /* }  */=  "ba133794-2410-4ba6-a75c-455d8fd2d89d" /* event.queryStringParameters */
 
   if (!gameId) {
     return createError(400, 'gameId is required');
