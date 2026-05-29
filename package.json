@@ -21,7 +21,7 @@
     "eslint-plugin-import": "^2.26.0",
     "serverless": "^3.20.0",
     "serverless-dynamodb-local": "0.2.30",
-    "serverless-offline": "^8.8.1"
+    "serverless-offline": "^14.7.1"
   },
   "scripts": {
     "lint": "eslint .",
